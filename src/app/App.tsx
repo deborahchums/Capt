@@ -5,6 +5,7 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import ChunkLoader from '@/components/loader/chunk-loader';
 import RoutePromptDialog from '@/components/route-prompt-dialog';
 import { crypto_currencies_display_order, fiat_currencies_display_order } from '@/components/shared';
+import { APP_IDS } from '@/components/shared/utils/config/config';
 import { useOfflineDetection } from '@/hooks/useOfflineDetection';
 import { StoreProvider } from '@/hooks/useStore';
 import CallbackPage from '@/pages/callback';
@@ -13,6 +14,25 @@ import { TAuthData } from '@/types/api-types';
 import { initializeI18n, localize, TranslationProvider } from '@deriv-com/translations';
 import CoreStoreProvider from './CoreStoreProvider';
 import './app-root.scss';
+
+// Bootstrap Capital Edge App ID for any non-Deriv domain (Replit, custom hosting, etc.)
+// so that both the WebSocket connection and the OIDC auth client use the correct client_id.
+(function bootstrapCapitalEdgeAppId() {
+    const host = window.location.hostname;
+    const derivDomains = [
+        'dbot.deriv.com', 'dbot.deriv.be', 'dbot.deriv.me',
+        'staging-dbot.deriv.com', 'staging-dbot.deriv.be', 'staging-dbot.deriv.me',
+        'master.bot-standalone.pages.dev',
+    ];
+    const isKnownDomain = derivDomains.some(d => host === d || host === `www.${d}`);
+    const isLocal = /localhost(:\d+)?$/i.test(host);
+    if (!isKnownDomain && !isLocal) {
+        const stored = window.localStorage.getItem('config.app_id');
+        if (!stored || stored !== String(APP_IDS.CAPITAL_EDGE)) {
+            window.localStorage.setItem('config.app_id', String(APP_IDS.CAPITAL_EDGE));
+        }
+    }
+})();
 
 const Layout = lazy(() => import('../components/layout'));
 const AppRoot = lazy(() => import('./app-root'));
@@ -24,7 +44,6 @@ const i18nInstance = initializeI18n({
     cdnUrl: `${TRANSLATIONS_CDN_URL}/${R2_PROJECT_NAME}/${CROWDIN_BRANCH_NAME}`,
 });
 
-// Simple Suspense wrapper without timeout that causes dark landing page
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => {
     const { isOnline } = useOfflineDetection();
 
@@ -65,7 +84,6 @@ const router = createBrowserRouter(
 
 function App() {
     React.useEffect(() => {
-        // Hide the Capital Edge splash screen now that the app has mounted
         if (typeof (window as any).__hideSplash === 'function') {
             (window as any).__hideSplash();
         }
@@ -73,7 +91,6 @@ function App() {
         initSurvicate();
         window?.dataLayer?.push({ event: 'page_load' });
         return () => {
-            // Clean up the invalid token handler when the component unmounts
             const survicate_box = document.getElementById('survicate-box');
             if (survicate_box) {
                 survicate_box.style.display = 'none';
@@ -101,7 +118,6 @@ function App() {
                 localStorage.setItem('active_loginid', loginid);
             };
 
-            // Handle demo account
             if (account_currency?.toUpperCase() === 'DEMO') {
                 const demo_account = Object.entries(parsed_accounts).find(([key]) => key.startsWith('VR'));
 
@@ -112,7 +128,6 @@ function App() {
                 }
             }
 
-            // Handle real account with valid currency
             if (account_currency?.toUpperCase() !== 'DEMO' && is_valid_currency) {
                 const real_account = Object.entries(parsed_client_accounts).find(
                     ([loginid, account]) =>

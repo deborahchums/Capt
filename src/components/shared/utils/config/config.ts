@@ -10,6 +10,7 @@ export const APP_IDS = {
     PRODUCTION: 65555,
     PRODUCTION_BE: 65556,
     PRODUCTION_ME: 65557,
+    CAPITAL_EDGE: 131540,
 };
 
 export const livechat_license_id = 12049137;
@@ -65,11 +66,23 @@ const getDefaultServerURL = () => {
     return server_url;
 };
 
+// Returns true for any Capital Edge / custom hosting domain (Replit, etc.)
+const isCapitalEdgeDomain = () => {
+    const host = window.location.hostname;
+    const isKnownDerivDomain = Object.keys(domain_app_ids).some(d => host === d || host === `www.${d}`);
+    const isLocalOrTest = /localhost(:\d+)?$/i.test(host) || isStaging();
+    return !isKnownDerivDomain && !isLocalOrTest;
+};
+
 export const getDefaultAppIdAndUrl = () => {
     const server_url = getDefaultServerURL();
 
     if (isTestLink()) {
         return { app_id: APP_IDS.LOCALHOST, server_url };
+    }
+
+    if (isCapitalEdgeDomain()) {
+        return { app_id: APP_IDS.CAPITAL_EDGE, server_url };
     }
 
     const current_domain = getCurrentProductionDomain() ?? '';
@@ -89,6 +102,8 @@ export const getAppId = () => {
         app_id = APP_IDS.STAGING;
     } else if (isTestLink()) {
         app_id = APP_IDS.LOCALHOST;
+    } else if (isCapitalEdgeDomain()) {
+        app_id = APP_IDS.CAPITAL_EDGE;
     } else {
         app_id = domain_app_ids[current_domain as keyof typeof domain_app_ids] ?? APP_IDS.PRODUCTION;
     }
