@@ -1,3 +1,54 @@
+/* ===================== Capital Edge Theme ===================== */
+:root {
+    --ce-gold: #d4af37;
+    --ce-gold-hover: #f0cb5a;
+    --ce-dark-bg: #0a0f1e;
+    --ce-dark-surface: #111827;
+    --ce-dark-border: rgba(212, 175, 55, 0.2);
+}
+
+/* Header dark background */
+.deriv-header,
+header.app-header,
+.app-header {
+    background-color: var(--ce-dark-bg) !important;
+    border-bottom: 1px solid var(--ce-dark-border) !important;
+}
+
+/* "Start Trading" golden button */
+.start-trading-btn,
+.start-trading-btn.dc-btn--primary {
+    background: linear-gradient(135deg, #d4af37 0%, #f0cb5a 100%) !important;
+    border-color: #d4af37 !important;
+    color: #0a0f1e !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.03em !important;
+
+    &:hover {
+        background: linear-gradient(135deg, #f0cb5a 0%, #d4af37 100%) !important;
+        border-color: #f0cb5a !important;
+    }
+
+    span {
+        color: #0a0f1e !important;
+    }
+}
+
+/* Platform switcher / menu items on dark bg */
+.app-header {
+    .deriv-text,
+    .dc-text {
+        color: #e8e8e8 !important;
+    }
+}
+
+/* Trader's Hub link text in dark header */
+.deriv-traders-hub-link,
+.traders-hub-link {
+    color: #e8e8e8 !important;
+}
+/* ============================================================== */
+
 .bot {
     --bot-content-height: calc(100vh - 140px);
     --bot-content-width: calc(100vw - 366px);

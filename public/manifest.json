@@ -1,11 +1,11 @@
 {
-  "name": "Deriv Bot - Automated Trading Platform",
-  "short_name": "Deriv Bot",
-  "description": "Automated trading at your fingertips. No coding needed.",
+  "name": "Capital Edge - Automated Trading Platform",
+  "short_name": "Capital Edge",
+  "description": "Trade smarter with Capital Edge. Automated trading at your fingertips.",
   "start_url": "/?source=mobile",
   "display": "standalone",
-  "background_color": "#0e0e0e",
-  "theme_color": "#ff444f",
+  "background_color": "#0a0f1e",
+  "theme_color": "#0a0f1e",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
@@ -67,14 +67,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Deriv Bot Dashboard"
+      "label": "Capital Edge Dashboard"
     },
     {
       "src": "/assets/screenshots/mobile-screenshot.png",
       "sizes": "640x1136",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Deriv Bot Mobile View"
+      "label": "Capital Edge Mobile View"
     }
   ],
   "shortcuts": [

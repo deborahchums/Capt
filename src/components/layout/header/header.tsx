@@ -136,7 +136,8 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             return (
                 <div className='auth-actions'>
                     <Button
-                        tertiary
+                        className='start-trading-btn'
+                        primary
                         onClick={async () => {
                             clearAuthData(false);
                             const getQueryParams = new URLSearchParams(window.location.search);
@@ -145,13 +146,10 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                                 currency || sessionStorage.getItem('query_param_currency') || 'USD';
 
                             try {
-                                // First, explicitly wait for TMB status to be determined
                                 const tmbEnabled = await isTmbEnabled();
-                                // Now use the result of the explicit check
                                 if (tmbEnabled) {
-                                    await onRenderTMBCheck(true); // Pass true to indicate it's from login button
+                                    await onRenderTMBCheck(true);
                                 } else {
-                                    // Always use OIDC if TMB is not enabled
                                     try {
                                         await requestOidcAuthentication({
                                             redirectCallbackUri: `${window.location.origin}/callback`,
@@ -174,15 +172,7 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                             }
                         }}
                     >
-                        <Localize i18n_default_text='Log in' />
-                    </Button>
-                    <Button
-                        primary
-                        onClick={() => {
-                            window.open(standalone_routes.signup);
-                        }}
-                    >
-                        <Localize i18n_default_text='Sign up' />
+                        <Localize i18n_default_text='Start Trading' />
                     </Button>
                 </div>
             );
