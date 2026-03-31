@@ -172,17 +172,15 @@ const AppContent = observer(() => {
         });
     };
 
-    const changeActiveSymbolLoadingState = () => {
-        init();
+    const retrieveActiveSymbols = () => {
+        const { active_symbols } = ApiHelpers.instance;
+        if (!isOnline) return;
+        active_symbols.retrieveActiveSymbols(true).catch(error => {
+            console.error('[API] Failed to retrieve active symbols:', error);
+        });
+    };
 
-        const retrieveActiveSymbols = () => {
-            const { active_symbols } = ApiHelpers.instance;
-            if (!isOnline) return;
-            active_symbols.retrieveActiveSymbols(true).catch(error => {
-                console.error('[API] Failed to retrieve active symbols:', error);
-            });
-        };
-
+    const scheduleActiveSymbolRetrieval = () => {
         if (ApiHelpers?.instance?.active_symbols) {
             retrieveActiveSymbols();
         } else {
@@ -202,7 +200,7 @@ const AppContent = observer(() => {
         if (is_api_initialized) {
             init();
             if (!client.is_logged_in) {
-                changeActiveSymbolLoadingState();
+                scheduleActiveSymbolRetrieval();
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -211,7 +209,7 @@ const AppContent = observer(() => {
     // use is_landing_company_loaded to know got details of accounts to identify should show an error or not
     React.useEffect(() => {
         if (client.is_logged_in && client.is_landing_company_loaded && is_api_initialized) {
-            changeActiveSymbolLoadingState();
+            scheduleActiveSymbolRetrieval();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client.is_landing_company_loaded, is_api_initialized, client.loginid]);
