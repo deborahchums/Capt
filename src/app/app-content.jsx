@@ -37,6 +37,8 @@ const AppContent = observer(() => {
     const [is_loading, setIsLoading] = React.useState(true);
     const [is_eu_error_loading, setIsEuErrorLoading] = React.useState(true);
     const [offline_timeout, setOfflineTimeout] = React.useState(null);
+    const loading_hard_timeout = React.useRef(null);
+    const is_loading_ref = React.useRef(true);
     const store = useStore();
     const { app, transactions, common, client } = store;
     const { showDigitalOptionsMaltainvestError } = app;
@@ -109,6 +111,24 @@ const AppContent = observer(() => {
             }
         };
     }, [isOnline, is_loading, offline_timeout, app.dbot_store]);
+
+    // Keep ref in sync so the timeout callback always has the latest value
+    React.useEffect(() => {
+        is_loading_ref.current = is_loading;
+    }, [is_loading]);
+
+    // Hard cap: never stay on the loading screen longer than 8 seconds
+    React.useEffect(() => {
+        loading_hard_timeout.current = setTimeout(() => {
+            if (is_loading_ref.current) {
+                console.log('[Timeout] Hard loading timeout reached, forcing dashboard');
+                setIsLoading(false);
+                setIsApiInitialized(true);
+            }
+        }, 8000);
+        return () => clearTimeout(loading_hard_timeout.current);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const { current_language } = common;
     const html = document.documentElement;
