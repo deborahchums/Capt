@@ -1,3 +1,4 @@
+import React from 'react';
 import Cookies from 'js-cookie';
 import { crypto_currencies_display_order, fiat_currencies_display_order } from '@/components/shared';
 import { generateDerivApiInstance } from '@/external/bot-skeleton/services/api/appId';
@@ -7,9 +8,6 @@ import { clearAuthData } from '@/utils/auth-utils';
 import { Callback } from '@deriv-com/auth-client';
 import { Button } from '@deriv-com/ui';
 
-/**
- * Gets the selected currency or falls back to appropriate defaults
- */
 const getSelectedCurrency = (
     tokens: Record<string, string>,
     clientAccounts: Record<string, any>,
@@ -31,6 +29,24 @@ const getSelectedCurrency = (
 };
 
 const CallbackPage = () => {
+    const handleSignInError = React.useCallback((error: Error) => {
+        // Log the real error for debugging
+        console.error('[Capital Edge] OIDC callback error:', error?.message, error);
+
+        // Check URL for OAuth error params Deriv may have sent back
+        const params = new URLSearchParams(window.location.search);
+        const oauthError = params.get('error');
+        const oauthDesc  = params.get('error_description');
+        if (oauthError) {
+            console.error('[Capital Edge] OAuth error from Deriv:', oauthError, oauthDesc);
+        }
+
+        // Clear any stale OIDC session storage so the next login attempt starts fresh
+        Object.keys(sessionStorage)
+            .filter(k => k.startsWith('oidc.'))
+            .forEach(k => sessionStorage.removeItem(k));
+    }, []);
+
     return (
         <Callback
             onSignInSuccess={async (tokens: Record<string, string>, rawState: unknown) => {
@@ -67,19 +83,14 @@ const CallbackPage = () => {
                     const { authorize, error } = await api.authorize(tokens.token1);
                     api.disconnect();
                     if (error) {
-                        // Check if the error is due to an invalid token
                         if (error.code === 'InvalidToken') {
-                            // Set is_token_set to true to prevent the app from getting stuck in loading state
                             is_token_set = true;
 
-                            // Only emit the InvalidToken event if logged_state is true
                             const { is_tmb_enabled = false } = useTMB();
                             if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
-                                // Emit an event that can be caught by the application to retrigger OIDC authentication
                                 globalObserver.emit('InvalidToken', { error });
                             }
                             if (Cookies.get('logged_state') === 'false') {
-                                // If the user is not logged out, we need to clear the local storage
                                 clearAuthData();
                             }
                         }
@@ -99,20 +110,24 @@ const CallbackPage = () => {
                     localStorage.setItem('authToken', tokens.token1);
                     localStorage.setItem('active_loginid', tokens.acct1);
                 }
-                // Determine the appropriate currency to use
                 const selected_currency = getSelectedCurrency(tokens, clientAccounts, state);
-
                 window.location.replace(window.location.origin + `bot/?account=${selected_currency}`);
             }}
+            onSignInError={handleSignInError}
             renderReturnButton={() => {
                 return (
                     <Button
                         className='callback-return-button'
                         onClick={() => {
+                            // Clear stale OIDC state before going back so next login is clean
+                            Object.keys(sessionStorage)
+                                .filter(k => k.startsWith('oidc.'))
+                                .forEach(k => sessionStorage.removeItem(k));
+                            localStorage.removeItem('config.oidc_endpoints');
                             window.location.href = '/';
                         }}
                     >
-                        {'Return to Bot'}
+                        {'Return to Capital Edge'}
                     </Button>
                 );
             }}
