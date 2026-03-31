@@ -1,300 +1,345 @@
-.copy-trading {
-    padding: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
-    min-height: calc(100vh - 200px);
+.ct {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 140px);
+    background: #f4f4f6;
 
     &__header {
-        text-align: center;
-        margin-bottom: 32px;
-    }
-
-    &__header-badge {
-        display: inline-block;
-        background: rgba(212, 175, 55, 0.12);
-        border: 1px solid rgba(212, 175, 55, 0.4);
-        color: #d4af37;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        padding: 6px 16px;
-        border-radius: 20px;
-        margin-bottom: 16px;
-    }
-
-    &__title {
-        font-size: 36px;
-        font-weight: 800;
-        color: var(--text-general);
-        margin-bottom: 12px;
-    }
-
-    &__subtitle {
-        font-size: 16px;
-        color: var(--text-less-prominent);
-        max-width: 580px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-
-    &__leaderboard-banner {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 32px;
-        background: linear-gradient(135deg, rgba(10, 15, 30, 0.9), rgba(17, 24, 39, 0.9));
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-radius: 16px;
-        padding: 20px 40px;
-        margin-bottom: 40px;
+        gap: 12px;
+        padding: 16px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e8;
+        flex-wrap: wrap;
     }
 
-    &__banner-stat {
+    &__demo-btn {
+        padding: 11px 20px;
+        background: #2ecc40;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover { background: #27ae36; }
+    }
+
+    &__yt-btn {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        padding: 8px 14px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        cursor: pointer;
+        margin-left: auto;
 
-        &-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: #d4af37;
-        }
-
-        &-label {
-            font-size: 12px;
-            color: var(--text-less-prominent);
-        }
+        &:hover { background: #f5f5f5; }
     }
 
-    &__banner-divider {
-        width: 1px;
-        height: 40px;
-        background: rgba(212, 175, 55, 0.2);
-    }
-
-    &__grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-        gap: 24px;
-        margin-bottom: 40px;
-    }
-
-    &__card {
-        background: var(--general-main-1);
-        border-radius: 20px;
-        padding: 24px;
-        border: 1px solid var(--border-normal);
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-
-        &:hover {
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.1);
-            transform: translateY(-4px);
-        }
-
-        &-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
-        &-info {
-            flex: 1;
-        }
-
-        &-name-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        &-name {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--text-general);
-            margin: 0;
-        }
-
-        &-handle {
-            display: block;
-            font-size: 13px;
-            color: var(--text-less-prominent);
-            margin-top: 2px;
-        }
-
-        &-specialty {
-            display: inline-block;
-            margin-top: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 12px;
-            background: rgba(212, 175, 55, 0.1);
-            color: #d4af37;
-            border: 1px solid rgba(212, 175, 55, 0.25);
-        }
-
-        &-description {
-            font-size: 14px;
-            color: var(--text-less-prominent);
-            line-height: 1.6;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        &-metrics {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 12px;
-            padding: 14px;
-            background: var(--general-section-1);
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-
-        &-btn {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(135deg, #d4af37 0%, #f0cb5a 100%);
-            color: #0a0f1e;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
-
-            &:hover:not(:disabled) {
-                transform: scale(1.02);
-                box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
-            }
-
-            &:disabled {
-                opacity: 0.7;
-                cursor: not-allowed;
-            }
-
-            &--copied {
-                background: linear-gradient(135deg, #22c55e, #16a34a) !important;
-                color: white !important;
-            }
-
-            &-loading {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-
-                &::after {
-                    content: '';
-                    width: 14px;
-                    height: 14px;
-                    border: 2px solid #0a0f1e;
-                    border-top-color: transparent;
-                    border-radius: 50%;
-                    animation: spin 0.8s linear infinite;
-                }
-            }
-        }
-    }
-
-    &__avatar {
-        font-size: 44px;
-        line-height: 1;
-        flex-shrink: 0;
-    }
-
-    &__verified {
+    &__yt-icon {
+        width: 26px;
+        height: 20px;
+        background: #ff0000;
+        color: #fff;
+        border-radius: 4px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 18px;
-        height: 18px;
-        background: #d4af37;
-        color: #0a0f1e;
-        border-radius: 50%;
         font-size: 10px;
-        font-weight: 900;
-        flex-shrink: 0;
-    }
 
-    &__return-badge {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 2px;
-        flex-shrink: 0;
-
-        span:first-child {
-            font-size: 20px;
-            font-weight: 800;
-            color: #22c55e;
+        &--sm {
+            width: 22px;
+            height: 16px;
+            font-size: 8px;
         }
     }
 
-    &__return-label {
-        font-size: 11px;
-        color: var(--text-less-prominent);
+    &__account-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #1a2f6e;
+        margin: 16px;
+        padding: 16px 20px;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 700;
     }
 
-    &__metric {
+    &__account-id {
+        font-size: 15px;
+        letter-spacing: 0.02em;
+    }
+
+    &__account-balance {
+        font-size: 17px;
+        color: #ffd700;
+        font-weight: 800;
+    }
+
+    &__section-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1a1a2e;
+        padding: 0 16px 10px;
+    }
+
+    &__card {
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 10px;
+        margin: 0 16px 16px;
+        padding: 16px;
+
+        &--running {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(46, 204, 64, 0.08);
+            border-color: #2ecc40;
+            font-size: 13px;
+            color: #1a7a2a;
+            font-weight: 600;
+        }
+    }
+
+    &__token-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    &__token-input {
+        flex: 1;
+        min-width: 140px;
+        padding: 11px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #1a1a2e;
+        outline: none;
+
+        &:focus { border-color: #00c2cb; }
+        &::placeholder { color: #aaa; }
+    }
+
+    &__add-btn {
+        padding: 11px 20px;
+        background: #00c2cb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:hover { background: #00a8b0; }
+    }
+
+    &__sync-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 11px 16px;
+        background: #00c2cb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+
+        &:hover:not(:disabled) { background: #00a8b0; }
+        &:disabled { opacity: 0.7; cursor: not-allowed; }
+    }
+
+    &__sync-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: ct-spin 0.7s linear infinite;
+    }
+
+    &__tutorial-icon {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        color: #555;
+        padding: 0;
+
+        &:hover { color: #333; }
+    }
+
+    &__clients-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    &__clients-count {
+        font-size: 15px;
+        color: #1a1a2e;
+        font-weight: 600;
+    }
+
+    &__start-copy-btn {
+        padding: 11px 18px;
+        background: #2ecc40;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover:not(:disabled) { background: #27ae36; }
+
+        &:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+    }
+
+    &__no-clients {
+        font-size: 13px;
+        color: #aaa;
+        margin-top: 12px;
+        margin-bottom: 0;
+    }
+
+    &__client-list {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 0;
         display: flex;
         flex-direction: column;
+        gap: 8px;
+    }
+
+    &__client-item {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
+        padding: 8px 12px;
+        background: #f8f8f8;
+        border-radius: 6px;
+        border: 1px solid #e8e8e8;
+    }
+
+    &__client-token {
+        font-size: 13px;
+        color: #444;
+        font-family: monospace;
+        word-break: break-all;
+    }
+
+    &__remove-btn {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 2px 6px;
+        flex-shrink: 0;
+
+        &:hover { color: #e53e3e; }
+    }
+
+    &__running-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #2ecc40;
+        flex-shrink: 0;
+        animation: ct-pulse 1s ease infinite;
+    }
+
+    &__footer {
+        margin-top: auto;
+        border-top: 1px solid #e0e0e0;
+        background: #fff;
+        position: sticky;
+        bottom: 0;
+    }
+
+    &__run-bar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+
+    &__run-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #00c2cb;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+
+        &--active { background: #e53e3e; }
+        &:hover { opacity: 0.9; }
+    }
+
+    &__run-status {
+        flex: 1;
+        font-size: 13px;
+        color: #888;
+    }
+
+    &__run-dots {
+        display: flex;
         gap: 4px;
-        text-align: center;
 
-        &-value {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-general);
-
-            &--green { color: #22c55e; }
-            &--gold { color: #d4af37; }
-        }
-
-        &-label {
-            font-size: 10px;
-            color: var(--text-less-prominent);
+        span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ccc;
         }
     }
 
-    &__disclaimer {
-        text-align: center;
-        padding: 20px;
-        border-top: 1px solid var(--border-normal);
-
-        p {
-            font-size: 12px;
-            color: var(--text-less-prominent);
-            margin: 0;
-        }
-    }
-
-    @keyframes spin {
+    @keyframes ct-spin {
         to { transform: rotate(360deg); }
     }
 
+    @keyframes ct-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
     @media (max-width: 768px) {
-        padding: 16px;
-
-        &__title { font-size: 26px; }
-
-        &__grid {
-            grid-template-columns: 1fr;
-        }
-
-        &__leaderboard-banner {
-            gap: 16px;
-            padding: 16px 20px;
-        }
-
-        &__card-metrics {
-            grid-template-columns: 1fr 1fr;
-        }
+        &__account-card { margin: 12px; }
+        &__card { margin: 0 12px 12px; }
+        &__section-title { padding: 0 12px 10px; }
     }
 }
