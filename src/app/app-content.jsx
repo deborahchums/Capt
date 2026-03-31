@@ -32,6 +32,7 @@ import '../components/bot-notification/bot-notification.scss';
 
 const AppContent = observer(() => {
     const [is_api_initialized, setIsApiInitialized] = React.useState(false);
+    const [is_dbot_ready, setIsDbotReady] = React.useState(false);
     const [is_eu_error_loading, setIsEuErrorLoading] = React.useState(true);
     const [offline_timeout, setOfflineTimeout] = React.useState(null);
     const store = useStore();
@@ -165,6 +166,7 @@ const AppContent = observer(() => {
         ServerTime.init(common);
         app.setDBotEngineStores();
         ApiHelpers.setInstance(app.api_helpers_store);
+        setIsDbotReady(true);
         import('@/utils/gtm').then(({ default: GTM }) => {
             GTM.init(store);
         });
@@ -231,7 +233,7 @@ const AppContent = observer(() => {
                 <div className='bot-dashboard bot' data-testid='dt_bot_dashboard'>
                     <Audio />
                     <Main />
-                    {is_api_initialized && <BotBuilder />}
+                    {is_dbot_ready && <BotBuilder />}
                     <BotStopped />
                     <TransactionDetailsModal />
                     <PWAInstallModal />
