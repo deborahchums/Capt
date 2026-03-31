@@ -231,7 +231,7 @@ const AppContent = observer(() => {
                 <div className='bot-dashboard bot' data-testid='dt_bot_dashboard'>
                     <Audio />
                     <Main />
-                    <BotBuilder />
+                    {is_api_initialized && <BotBuilder />}
                     <BotStopped />
                     <TransactionDetailsModal />
                     <PWAInstallModal />

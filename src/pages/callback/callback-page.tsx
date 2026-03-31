@@ -29,6 +29,8 @@ const getSelectedCurrency = (
 };
 
 const CallbackPage = () => {
+    const { is_tmb_enabled = false } = useTMB();
+
     const handleSignInError = React.useCallback((error: Error) => {
         // Log the real error for debugging
         console.error('[Capital Edge] OIDC callback error:', error?.message, error);
@@ -86,7 +88,6 @@ const CallbackPage = () => {
                         if (error.code === 'InvalidToken') {
                             is_token_set = true;
 
-                            const { is_tmb_enabled = false } = useTMB();
                             if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
                                 globalObserver.emit('InvalidToken', { error });
                             }
