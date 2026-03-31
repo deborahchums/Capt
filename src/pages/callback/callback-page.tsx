@@ -1,79 +1,32 @@
 import { useEffect, useState } from 'react';
-import { generateDerivApiInstance } from '@/external/bot-skeleton/services/api/appId';
 
 const CallbackPage = () => {
     const [status, setStatus] = useState('Processing login...');
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const handleOAuthCallback = async () => {
-            const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(window.location.search);
 
-            const accountsList: Record<string, string> = {};
-            const clientAccounts: Record<string, { loginid: string; token: string; currency: string }> = {};
+        // Collect all acct/token/cur params from the URL
+        const pairs: string[] = [];
+        let i = 1;
+        while (params.get(`acct${i}`) && params.get(`token${i}`)) {
+            pairs.push(`acct${i}=${encodeURIComponent(params.get(`acct${i}`) as string)}`);
+            pairs.push(`token${i}=${encodeURIComponent(params.get(`token${i}`) as string)}`);
+            const cur = params.get(`cur${i}`);
+            if (cur) pairs.push(`cur${i}=${encodeURIComponent(cur)}`);
+            i++;
+        }
 
-            let i = 1;
-            while (params.get(`acct${i}`) && params.get(`token${i}`)) {
-                const loginid = params.get(`acct${i}`) as string;
-                const token = params.get(`token${i}`) as string;
-                const currency = params.get(`cur${i}`) || '';
-                accountsList[loginid] = token;
-                clientAccounts[loginid] = { loginid, token, currency };
-                i++;
-            }
+        if (pairs.length === 0) {
+            setError('No login tokens found. Please try again.');
+            return;
+        }
 
-            if (Object.keys(accountsList).length === 0) {
-                setError('No account tokens received. Please try logging in again.');
-                return;
-            }
+        setStatus('Login successful! Redirecting...');
 
-            localStorage.setItem('accountsList', JSON.stringify(accountsList));
-            localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
-
-            const firstLoginId = Object.keys(accountsList)[0];
-            const firstToken = accountsList[firstLoginId];
-
-            setStatus('Authorizing account...');
-
-            try {
-                const api = await generateDerivApiInstance();
-                if (api) {
-                    const { authorize, error: authError } = await api.authorize(firstToken);
-                    api.disconnect();
-
-                    if (authError) {
-                        localStorage.setItem('authToken', firstToken);
-                        localStorage.setItem('active_loginid', firstLoginId);
-                    } else {
-                        const accountList = authorize?.account_list || [];
-                        const firstAccount = accountList[0];
-                        if (firstAccount) {
-                            const matchedId = firstAccount.loginid;
-                            const matchedToken = accountsList[matchedId] || firstToken;
-                            localStorage.setItem('authToken', matchedToken);
-                            localStorage.setItem('active_loginid', matchedId);
-                        } else {
-                            localStorage.setItem('authToken', firstToken);
-                            localStorage.setItem('active_loginid', firstLoginId);
-                        }
-                    }
-                } else {
-                    localStorage.setItem('authToken', firstToken);
-                    localStorage.setItem('active_loginid', firstLoginId);
-                }
-            } catch {
-                localStorage.setItem('authToken', firstToken);
-                localStorage.setItem('active_loginid', firstLoginId);
-            }
-
-            const isDemo = firstLoginId.startsWith('VR') || firstLoginId.startsWith('VRW');
-            const account = isDemo ? 'demo' : (clientAccounts[firstLoginId]?.currency || 'USD');
-
-            setStatus('Login successful! Redirecting...');
-            window.location.replace(`${window.location.origin}/?account=${account}`);
-        };
-
-        handleOAuthCallback();
+        // Redirect to root with the OAuth params so AuthWrapper processes them normally
+        window.location.replace(`${window.location.origin}/?${pairs.join('&')}`);
     }, []);
 
     if (error) {
