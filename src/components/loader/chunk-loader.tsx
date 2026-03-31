@@ -21,14 +21,15 @@ export default function ChunkLoader({ message }: { message: string }) {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        const target = 100;
-        const duration = 4000;
-        const step = target / (duration / 50);
+        // Count to 99 in ~1.2s, then hold while the app finishes connecting
         let current = 0;
         const t = setInterval(() => {
-            current = Math.min(current + step, target - 1);
-            setCount(Math.floor(current));
-        }, 50);
+            // Fast ramp up to 80, then slow down as it approaches 99
+            const remaining = 99 - current;
+            const increment = current < 80 ? 4 : remaining > 2 ? 1 : 0;
+            current = Math.min(current + increment, 99);
+            setCount(current);
+        }, 40);
         return () => clearInterval(t);
     }, []);
 
