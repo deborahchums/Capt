@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import AuthLoadingWrapper from '@/components/auth-loading-wrapper';
 import useLiveChat from '@/components/chat/useLiveChat';
 import { BOT_RESTRICTED_COUNTRIES_LIST } from '@/components/layout/header/utils';
-import ChunkLoader from '@/components/loader/chunk-loader';
 import PWAInstallModal from '@/components/pwa-install-modal';
 import { getUrlBase } from '@/components/shared';
 import TncStatusUpdateModal from '@/components/tnc-status-update-modal';
@@ -22,7 +21,6 @@ import initDatadog from '@/utils/datadog';
 import initHotjar from '@/utils/hotjar';
 import { setSmartChartsPublicPath } from '@deriv/deriv-charts';
 import { ThemeProvider } from '@deriv-com/quill-ui';
-import { localize } from '@deriv-com/translations';
 import Audio from '../components/audio';
 import BlocklyLoading from '../components/blockly-loading';
 import BotStopped from '../components/bot-stopped';
@@ -34,7 +32,6 @@ import '../components/bot-notification/bot-notification.scss';
 
 const AppContent = observer(() => {
     const [is_api_initialized, setIsApiInitialized] = React.useState(false);
-    const [is_loading, setIsLoading] = React.useState(true);
     const [is_eu_error_loading, setIsEuErrorLoading] = React.useState(true);
     const [offline_timeout, setOfflineTimeout] = React.useState(null);
     const store = useStore();
@@ -82,33 +79,16 @@ const AppContent = observer(() => {
         }
     }, [common, connectionStatus, offline_timeout]);
 
-    // Handle offline scenarios - don't wait indefinitely for API
+    // Handle offline reconnect — clear pending timeout when back online
     useEffect(() => {
-        if (!isOnline && is_loading) {
-            console.log('[Offline] Detected offline state, setting timeout to show dashboard');
-            const timeout = setTimeout(() => {
-                console.log('[Offline] Timeout reached, showing dashboard in offline mode');
-                setIsLoading(false);
-                setIsApiInitialized(true);
-                // Initialize basic stores for offline mode
-                if (!app.dbot_store) {
-                    init();
-                }
-            }, 3000); // Wait 3 seconds for potential connection, then show dashboard
-
-            setOfflineTimeout(timeout);
-        } else if (isOnline && offline_timeout) {
-            // Clear timeout if we come back online
+        if (isOnline && offline_timeout) {
             clearTimeout(offline_timeout);
             setOfflineTimeout(null);
         }
-
         return () => {
-            if (offline_timeout) {
-                clearTimeout(offline_timeout);
-            }
+            if (offline_timeout) clearTimeout(offline_timeout);
         };
-    }, [isOnline, is_loading, offline_timeout, app.dbot_store]);
+    }, [isOnline, offline_timeout]);
 
     const { current_language } = common;
     const html = document.documentElement;
@@ -195,58 +175,30 @@ const AppContent = observer(() => {
 
         const retrieveActiveSymbols = () => {
             const { active_symbols } = ApiHelpers.instance;
-
-            // Handle offline scenario
-            if (!isOnline) {
-                console.log('[Offline] Skipping active symbols retrieval, showing dashboard');
-                setIsLoading(false);
-                return;
-            }
-
-            active_symbols
-                .retrieveActiveSymbols(true)
-                .then(() => {
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error('[API] Failed to retrieve active symbols:', error);
-                    // Don't stay in loading state if API fails
-                    setIsLoading(false);
-                });
+            if (!isOnline) return;
+            active_symbols.retrieveActiveSymbols(true).catch(error => {
+                console.error('[API] Failed to retrieve active symbols:', error);
+            });
         };
 
         if (ApiHelpers?.instance?.active_symbols) {
             retrieveActiveSymbols();
         } else {
-            // This is a workaround to fix the issue where the active symbols are not loaded immediately
-            // when the API is initialized. Should be replaced with RxJS pubsub
             const intervalId = setInterval(() => {
                 if (ApiHelpers?.instance?.active_symbols) {
                     clearInterval(intervalId);
                     retrieveActiveSymbols();
                 } else if (!isOnline) {
-                    // If offline, don't wait indefinitely
                     clearInterval(intervalId);
-                    console.log('[Offline] Stopping active symbols wait, showing dashboard');
-                    setIsLoading(false);
                 }
             }, 1000);
-
-            // Set a maximum timeout to prevent infinite loading
-            setTimeout(() => {
-                clearInterval(intervalId);
-                if (is_loading) {
-                    console.log('[Timeout] Active symbols loading timeout, showing dashboard');
-                    setIsLoading(false);
-                }
-            }, 10000); // 10 second timeout
+            setTimeout(() => clearInterval(intervalId), 10000);
         }
     };
 
     React.useEffect(() => {
         if (is_api_initialized) {
             init();
-            setIsLoading(true);
             if (!client.is_logged_in) {
                 changeActiveSymbolLoadingState();
             }
@@ -271,44 +223,12 @@ const AppContent = observer(() => {
 
     if (common?.error) return null;
 
-    // Show loading message based on online/offline state
-    const getLoadingMessage = () => {
-        if (is_eu_error_loading) return '';
-        if (!isOnline) return localize('Loading offline dashboard...');
-        return localize('Initializing Deriv Bot account...');
-    };
-
-    // Skip loading entirely when offline - show dashboard directly
-    if (!isOnline) {
-        console.log('[Offline] Bypassing loader, showing dashboard directly');
-        return (
-            <AuthLoadingWrapper>
-                <ThemeProvider theme={is_dark_mode_on ? 'dark' : 'light'}>
-                    <BlocklyLoading />
-                    <div className='bot-dashboard bot' data-testid='dt_bot_dashboard'>
-                        {/* <PWAInstallModalTest /> */}
-                        <Audio />
-                        <Main />
-                        <BotBuilder />
-                        <BotStopped />
-                        <TransactionDetailsModal />
-                        <PWAInstallModal />
-                        <ToastContainer limit={3} draggable={false} />
-                        <TncStatusUpdateModal />
-                    </div>
-                </ThemeProvider>
-            </AuthLoadingWrapper>
-        );
-    }
-
-    return is_loading ? (
-        <ChunkLoader message={getLoadingMessage()} />
-    ) : (
+    // EU error check
+    return (
         <AuthLoadingWrapper>
             <ThemeProvider theme={is_dark_mode_on ? 'dark' : 'light'}>
                 <BlocklyLoading />
                 <div className='bot-dashboard bot' data-testid='dt_bot_dashboard'>
-                    {/* <PWAInstallModalTest /> */}
                     <Audio />
                     <Main />
                     <BotBuilder />
