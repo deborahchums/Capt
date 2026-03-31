@@ -767,3 +767,12 @@
 .main .dc-tabs__list {
     justify-content: flex-start !important;
 }
+
+// Ensure two-line Capital Edge logo is never clipped by header overflow
+.app-header .app-header__logo,
+.app-header__logo.capital-edge-logo {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 40px;
+}
+

@@ -3,44 +3,47 @@
         padding-inline-start: 1.2rem;
         padding-inline-end: 2rem;
         border-inline-end: 1px solid rgba(212, 175, 55, 0.2);
-        height: 40px;
         display: flex;
         align-items: center;
         text-decoration: none;
+        overflow: visible !important;
     }
 }
 
 .capital-edge-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
+    overflow: visible;
 
     &__wordmark {
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        gap: 0;
+        line-height: 1;
+        overflow: visible;
     }
 
     &__name {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: #d4af37;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.1em;
         white-space: nowrap;
         font-family: 'Georgia', serif;
-        line-height: 1;
+        line-height: 1.1;
         text-transform: uppercase;
     }
 
     &__tagline {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         font-weight: 400;
-        color: rgba(255, 255, 255, 0.6);
-        letter-spacing: 0.06em;
+        color: rgba(255, 255, 255, 0.75);
+        letter-spacing: 0.04em;
         white-space: nowrap;
         font-family: 'Georgia', serif;
         font-style: italic;
-        line-height: 1;
+        line-height: 1.1;
     }
 }
