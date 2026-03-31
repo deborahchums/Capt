@@ -97,6 +97,7 @@ export default class GoogleDriveStore {
     };
 
     initialiseClient = () => {
+        if (!this.client_id) return;
         this.client = google.accounts.oauth2.initTokenClient({
             client_id: this.client_id,
             scope: this.scope,
@@ -209,7 +210,7 @@ export default class GoogleDriveStore {
 
         const xml_doc = await this.createLoadFilePicker(
             'text/xml,application/xml',
-            localize('Select a Deriv Bot Strategy')
+            localize('Select a Capital Edge Strategy')
         );
 
         return xml_doc;
