@@ -10,6 +10,7 @@ export const APP_IDS = {
     PRODUCTION: 65555,
     PRODUCTION_BE: 65556,
     PRODUCTION_ME: 65557,
+    CAPITAL_EDGE: 131778,
 };
 
 export const livechat_license_id = 12049137;
@@ -44,9 +45,12 @@ export const isTestLink = () => {
 
 export const isLocal = () => /localhost(:\d+)?$/i.test(window.location.hostname);
 
+export const isReplitDomain = () =>
+    /\.(replit\.dev|replit\.app|repl\.co|kirk\.replit\.dev)$/i.test(window.location.hostname);
+
 const getDefaultServerURL = () => {
-    if (isTestLink()) {
-        return 'ws.derivws.com';
+    if (isTestLink() || isReplitDomain()) {
+        return 'green.derivws.com';
     }
 
     let active_loginid_from_url;
@@ -68,6 +72,10 @@ const getDefaultServerURL = () => {
 export const getDefaultAppIdAndUrl = () => {
     const server_url = getDefaultServerURL();
 
+    if (isReplitDomain()) {
+        return { app_id: APP_IDS.CAPITAL_EDGE, server_url };
+    }
+
     if (isTestLink()) {
         return { app_id: APP_IDS.LOCALHOST, server_url };
     }
@@ -85,6 +93,8 @@ export const getAppId = () => {
 
     if (config_app_id) {
         app_id = config_app_id;
+    } else if (isReplitDomain()) {
+        app_id = APP_IDS.CAPITAL_EDGE;
     } else if (isStaging()) {
         app_id = APP_IDS.STAGING;
     } else if (isTestLink()) {
