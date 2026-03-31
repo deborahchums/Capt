@@ -11,106 +11,62 @@ interface Bot {
     fileName: string;
     category: string;
     icon: string;
+    difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
 }
 
 const BOTS: Bot[] = [
     {
         id: '1',
-        name: 'Expert Speed Bot',
-        description: 'Advanced speed trading bot with optimized entry and exit points for quick trades.',
-        fileName: '2_2025_Updated_Expert_Speed_Bot_Version_📉📉📉📈📈📈_1_1_1765711647656.xml',
-        category: 'Speed Trading',
-        icon: '⚡',
+        name: 'Over Market Dream v2.1',
+        description: 'RSI-powered over/under digit trading on Volatility 100. Uses martingale recovery with smart RSI entry signals.',
+        fileName: 'Over_Market_Dream_2.1_1774935169248.xml',
+        category: 'Digits',
+        icon: '💎',
+        difficulty: 'Intermediate',
     },
     {
         id: '2',
-        name: 'Candle Mine Bot',
-        description: 'Analyzes candlestick patterns to identify profitable trading opportunities.',
-        fileName: '3_2025_Updated_Version_Of_Candle_Mine🇬🇧_1765711647657.xml',
-        category: 'Pattern Analysis',
-        icon: '🕯️',
+        name: 'Asian Pro Bot',
+        description: 'Professional Asian contract bot with martingale recovery. Targets consistent profits on V100 index.',
+        fileName: 'Asian_Pro_Dbot_1774935169326.xml',
+        category: 'Asian',
+        icon: '🏆',
+        difficulty: 'Advanced',
     },
     {
         id: '3',
-        name: 'Accumulators Pro Bot',
-        description: 'Professional accumulator strategy bot for consistent growth trading.',
-        fileName: 'Accumulators_Pro_Bot_1765711647657.xml',
-        category: 'Accumulators',
-        icon: '📈',
+        name: 'Higher / Lower Bot',
+        description: 'RSI-based higher/lower strategy on V10 index. Smart signal detection with martingale staking.',
+        fileName: 'Higher_lower_Dbot_1774935169370.xml',
+        category: 'Rise/Fall',
+        icon: '📊',
+        difficulty: 'Intermediate',
     },
     {
         id: '4',
-        name: 'AI Entry Point Bot',
-        description: 'AI-powered bot that identifies optimal entry points for maximum profit.',
-        fileName: 'AI_with_Entry_Point_1765711647658.xml',
-        category: 'AI Trading',
-        icon: '🤖',
+        name: 'Poverty X V2.1',
+        description: 'Rise/fall RSI bot on Volatility 10. Dual direction trading with intelligent stake management.',
+        fileName: 'Poverty_X_V2.1_1774935169420.xml',
+        category: 'Rise/Fall',
+        icon: '⚡',
+        difficulty: 'Beginner',
     },
     {
         id: '5',
-        name: 'Alex Speed Bot EXPRO2',
-        description: 'Enhanced speed trading bot with advanced algorithms for rapid execution.',
-        fileName: 'ALEXSPEEDBOT__EXPRO2_(2)_(1)_1765711647659.xml',
-        category: 'Speed Trading',
-        icon: '🚀',
-    },
-    {
-        id: '6',
-        name: 'Alpha AI Two Predictions',
-        description: 'Dual prediction AI system for higher accuracy in market forecasting.',
-        fileName: 'Alpha_Ai_Two_Predictions__1765711647659.xml',
-        category: 'AI Trading',
+        name: 'Even Bot Free Edition',
+        description: 'Pattern-based even/odd digit bot on V100. Advanced scalping with configurable martingale and profit targets.',
+        fileName: 'Even_Bot_Free_Version_1774935169490.xml',
+        category: 'Even/Odd',
         icon: '🎯',
-    },
-    {
-        id: '7',
-        name: 'Auto C4 Volt Premium',
-        description: 'Premium automated trading bot with advanced market analysis features.',
-        fileName: 'AUTO_C4_VOLT_🇬🇧_2_🇬🇧_AI_PREMIUM_ROBOT_(2)_(1)_1765711647660.xml',
-        category: 'Premium',
-        icon: '⚡',
-    },
-    {
-        id: '8',
-        name: 'Binary Flipper AI Plus',
-        description: 'AI-enhanced binary options trading bot with flip strategy optimization.',
-        fileName: 'BINARY_FLIPPER_AI_ROBOT_PLUS_+_1765711647660.xml',
-        category: 'AI Trading',
-        icon: '🔄',
-    },
-    {
-        id: '9',
-        name: 'Binarytool Wizard AI',
-        description: 'Intelligent trading wizard with multiple strategy implementations.',
-        fileName: 'BINARYTOOL_WIZARD_AI_BOT_1765711647661.xml',
-        category: 'AI Trading',
-        icon: '🧙',
-    },
-    {
-        id: '10',
-        name: 'Binarytool Differ V2.0',
-        description: 'Version 2.0 differ bot with improved accuracy and performance.',
-        fileName: 'BINARYTOOL@_DIFFER_V2.0_(1)_(1)_1765711647662.xml',
-        category: 'Differ',
-        icon: '📊',
-    },
-    {
-        id: '11',
-        name: 'Even Odd Thunder AI Pro',
-        description: 'Professional even/odd prediction bot with thunder-fast execution.',
-        fileName: 'BINARYTOOL@EVEN_ODD_THUNDER_AI_PRO_BOT_1765711647662.xml',
-        category: 'Even/Odd',
-        icon: '⚡',
-    },
-    {
-        id: '12',
-        name: 'Even & Odd AI Bot',
-        description: 'Smart AI bot specialized in even and odd digit predictions.',
-        fileName: 'BINARYTOOL@EVEN&ODD_AI_BOT_(2)_1765711647663.xml',
-        category: 'Even/Odd',
-        icon: '🎲',
+        difficulty: 'Advanced',
     },
 ];
+
+const difficultyColor: Record<string, string> = {
+    Beginner: '#22c55e',
+    Intermediate: '#f59e0b',
+    Advanced: '#d4af37',
+};
 
 const FreeBots = observer(() => {
     const { dashboard } = useStore();
@@ -119,21 +75,19 @@ const FreeBots = observer(() => {
 
     const categories = ['All', ...Array.from(new Set(BOTS.map(bot => bot.category)))];
 
-    const filteredBots = selectedCategory === 'All' 
-        ? BOTS 
+    const filteredBots = selectedCategory === 'All'
+        ? BOTS
         : BOTS.filter(bot => bot.category === selectedCategory);
 
     const loadBot = async (bot: Bot) => {
         try {
             setLoadingBotId(bot.id);
-            
+
             const response = await fetch(`/bots/${bot.fileName}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch bot file');
-            }
-            
+            if (!response.ok) throw new Error('Failed to fetch bot file');
+
             const xmlContent = await response.text();
-            
+
             await load({
                 block_string: xmlContent,
                 file_name: bot.name,
@@ -146,7 +100,6 @@ const FreeBots = observer(() => {
 
             dashboard.setActiveTab(1);
             window.location.hash = 'bot_builder';
-            
         } catch (error) {
             console.error('Error loading bot:', error);
         } finally {
@@ -157,9 +110,9 @@ const FreeBots = observer(() => {
     return (
         <div className='free-bots'>
             <div className='free-bots__header'>
-                <h1 className='free-bots__title'>Free Trading Bots</h1>
+                <h1 className='free-bots__title'>Capital Edge Bots</h1>
                 <p className='free-bots__subtitle'>
-                    Explore our collection of pre-built trading bots. Click on any bot to load it into the Bot Builder.
+                    Handpicked automated strategies built for edge. Load any bot directly into the builder and start trading.
                 </p>
             </div>
 
@@ -180,7 +133,15 @@ const FreeBots = observer(() => {
                     <div key={bot.id} className='free-bots__card'>
                         <div className='free-bots__card-header'>
                             <span className='free-bots__card-icon'>{bot.icon}</span>
-                            <span className='free-bots__card-category'>{bot.category}</span>
+                            <div className='free-bots__card-badges'>
+                                <span className='free-bots__card-category'>{bot.category}</span>
+                                <span
+                                    className='free-bots__card-difficulty'
+                                    style={{ color: difficultyColor[bot.difficulty] }}
+                                >
+                                    {bot.difficulty}
+                                </span>
+                            </div>
                         </div>
                         <h3 className='free-bots__card-title'>{bot.name}</h3>
                         <p className='free-bots__card-description'>{bot.description}</p>
@@ -194,8 +155,8 @@ const FreeBots = observer(() => {
                             ) : (
                                 <>
                                     <span>Load Bot</span>
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                                    <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
+                                        <path d='M5 12h14M12 5l7 7-7 7' />
                                     </svg>
                                 </>
                             )}
@@ -205,7 +166,7 @@ const FreeBots = observer(() => {
             </div>
 
             <div className='free-bots__footer'>
-                <p>All bots are provided for educational purposes. Always test with demo accounts first.</p>
+                <p>All bots are provided for educational purposes. Always test with a demo account first.</p>
             </div>
         </div>
     );
