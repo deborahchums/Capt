@@ -1,6 +1,5 @@
 import React from 'react';
 import Cookies from 'js-cookie';
-import ChunkLoader from '@/components/loader/chunk-loader';
 import { generateDerivApiInstance } from '@/external/bot-skeleton/services/api/appId';
 import { observer as globalObserver } from '@/external/bot-skeleton/utils/observer';
 import { useOfflineDetection } from '@/hooks/useOfflineDetection';
@@ -140,13 +139,8 @@ export const AuthWrapper = () => {
         }
     }, [isOnline, isAuthComplete]);
 
-    const getLoadingMessage = () => {
-        if (!isOnline) return localize('Loading offline mode...');
-        return localize('Initializing...');
-    };
-
     if (!isAuthComplete) {
-        return <ChunkLoader message={getLoadingMessage()} />;
+        return null;
     }
 
     return <App />;

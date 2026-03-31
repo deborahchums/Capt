@@ -36,129 +36,13 @@
             :root {
                 font-size: 62.5%;
             }
-
-            #ce-splash {
-                position: fixed;
-                inset: 0;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                background: #050d0a;
-                z-index: 99999;
-                overflow: hidden;
-                transition: opacity 0.4s ease;
-            }
-
-            #ce-splash.hidden {
-                opacity: 0;
-                pointer-events: none;
-            }
-
-            #ce-splash .ce-bg {
-                position: absolute;
-                inset: 0;
-                background:
-                    radial-gradient(ellipse 80% 60% at 60% 70%, rgba(120, 0, 0, 0.35) 0%, transparent 70%),
-                    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(0, 80, 0, 0.25) 0%, transparent 70%);
-            }
-
-            #ce-splash .ce-chart {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                opacity: 0.22;
-            }
-
-            #ce-splash .ce-logo-wrap {
-                position: relative;
-                z-index: 2;
-                text-align: center;
-            }
-
-            #ce-splash .ce-logo-text {
-                font-family: Georgia, 'Times New Roman', serif;
-                font-size: clamp(32px, 8vw, 52px);
-                font-weight: 700;
-                background: linear-gradient(90deg, #22c55e 0%, #ff4444 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                letter-spacing: 0.02em;
-                line-height: 1;
-            }
-
-            @keyframes ce-pulse {
-                0%, 100% { opacity: 0.7; }
-                50% { opacity: 1; }
-            }
         </style>
     </head>
 
     <body class="body theme theme--light">
-        <div id="ce-splash">
-            <div class="ce-bg"></div>
-            <svg class="ce-chart" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-                <!-- Candlestick chart pattern -->
-                <polyline points="30,380 120,310 200,340 300,200 420,260 520,160 650,220 750,140" stroke="#22c55e" stroke-width="1.5" fill="none" opacity="0.6"/>
-                <polyline points="30,380 120,310 200,340 300,200 420,260 520,160 650,220 750,140" stroke="#22c55e" stroke-width="0.5" fill="none" opacity="0.2" stroke-dasharray="4,4"/>
-                <!-- Green candles -->
-                <rect x="60" y="290" width="14" height="60" fill="#22c55e" rx="1"/>
-                <line x1="67" y1="275" x2="67" y2="295" stroke="#22c55e" stroke-width="1.5"/>
-                <line x1="67" y1="350" x2="67" y2="370" stroke="#22c55e" stroke-width="1.5"/>
-                <rect x="160" y="220" width="14" height="80" fill="#22c55e" rx="1"/>
-                <line x1="167" y1="200" x2="167" y2="225" stroke="#22c55e" stroke-width="1.5"/>
-                <line x1="167" y1="300" x2="167" y2="320" stroke="#22c55e" stroke-width="1.5"/>
-                <rect x="360" y="185" width="14" height="70" fill="#22c55e" rx="1"/>
-                <line x1="367" y1="165" x2="367" y2="190" stroke="#22c55e" stroke-width="1.5"/>
-                <line x1="367" y1="255" x2="367" y2="280" stroke="#22c55e" stroke-width="1.5"/>
-                <rect x="560" y="130" width="14" height="75" fill="#22c55e" rx="1"/>
-                <line x1="567" y1="110" x2="567" y2="135" stroke="#22c55e" stroke-width="1.5"/>
-                <line x1="567" y1="205" x2="567" y2="230" stroke="#22c55e" stroke-width="1.5"/>
-                <rect x="700" y="115" width="14" height="65" fill="#22c55e" rx="1"/>
-                <line x1="707" y1="95" x2="707" y2="120" stroke="#22c55e" stroke-width="1.5"/>
-                <line x1="707" y1="180" x2="707" y2="210" stroke="#22c55e" stroke-width="1.5"/>
-                <!-- Red candles -->
-                <rect x="110" y="310" width="14" height="55" fill="#ef4444" rx="1"/>
-                <line x1="117" y1="290" x2="117" y2="315" stroke="#ef4444" stroke-width="1.5"/>
-                <line x1="117" y1="365" x2="117" y2="385" stroke="#ef4444" stroke-width="1.5"/>
-                <rect x="260" y="240" width="14" height="65" fill="#ef4444" rx="1"/>
-                <line x1="267" y1="220" x2="267" y2="245" stroke="#ef4444" stroke-width="1.5"/>
-                <line x1="267" y1="305" x2="267" y2="330" stroke="#ef4444" stroke-width="1.5"/>
-                <rect x="460" y="200" width="14" height="70" fill="#ef4444" rx="1"/>
-                <line x1="467" y1="180" x2="467" y2="205" stroke="#ef4444" stroke-width="1.5"/>
-                <line x1="467" y1="270" x2="467" y2="295" stroke="#ef4444" stroke-width="1.5"/>
-                <rect x="620" y="175" width="14" height="55" fill="#ef4444" rx="1"/>
-                <line x1="627" y1="155" x2="627" y2="180" stroke="#ef4444" stroke-width="1.5"/>
-                <line x1="627" y1="230" x2="627" y2="255" stroke="#ef4444" stroke-width="1.5"/>
-                <!-- Dots at key points -->
-                <circle cx="30" cy="380" r="3" fill="#22c55e" opacity="0.7"/>
-                <circle cx="120" cy="310" r="3" fill="#ef4444" opacity="0.7"/>
-                <circle cx="200" cy="340" r="3" fill="#22c55e" opacity="0.7"/>
-                <circle cx="300" cy="200" r="3" fill="#22c55e" opacity="0.7"/>
-                <circle cx="420" cy="260" r="3" fill="#ef4444" opacity="0.7"/>
-                <circle cx="520" cy="160" r="3" fill="#22c55e" opacity="0.7"/>
-                <circle cx="650" cy="220" r="3" fill="#ef4444" opacity="0.7"/>
-                <circle cx="750" cy="140" r="3" fill="#22c55e" opacity="0.7"/>
-            </svg>
-            <div class="ce-logo-wrap">
-                <span class="ce-logo-text">Capital Edge</span>
-            </div>
-        </div>
         <div id="modal_root" class="modal-root"></div>
         <div id="popup_root" class="popup-root"></div>
         <div id="root"></div>
-        <script>
-            // Hide the splash screen once the app mounts
-            window.__hideSplash = function () {
-                var splash = document.getElementById('ce-splash');
-                if (splash) {
-                    splash.classList.add('hidden');
-                    setTimeout(function () { splash.remove(); }, 350);
-                }
-            };
-        </script>
         <!-- LiveChat script -->
         <script type="text/javascript" defer>
             window.__lc = window.__lc || {};
