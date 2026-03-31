@@ -112,7 +112,7 @@ const CallbackPage = () => {
                     localStorage.setItem('active_loginid', tokens.acct1);
                 }
                 const selected_currency = getSelectedCurrency(tokens, clientAccounts, state);
-                window.location.replace(window.location.origin + `bot/?account=${selected_currency}`);
+                window.location.replace(window.location.origin + `/?account=${selected_currency}`);
             }}
             onSignInError={handleSignInError}
             renderReturnButton={() => {
