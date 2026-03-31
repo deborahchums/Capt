@@ -73,6 +73,15 @@ const router = createBrowserRouter(
     )
 );
 
+// Handle 404.html SPA redirect: if a path was stored by 404.html, navigate to it
+(function handleSpaRedirect() {
+    const redirect = sessionStorage.getItem('spa_redirect');
+    if (redirect && redirect !== '/') {
+        sessionStorage.removeItem('spa_redirect');
+        window.history.replaceState(null, '', redirect);
+    }
+})();
+
 function App() {
     React.useEffect(() => {
         if (typeof (window as any).__hideSplash === 'function') {
