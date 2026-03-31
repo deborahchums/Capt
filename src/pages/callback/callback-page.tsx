@@ -70,8 +70,12 @@ const authorizeAndStore = async (
                 }
             } else {
                 localStorage.setItem('callback_token', authorize.toString());
-                const firstId = authorize?.account_list[0]?.loginid;
-                const matched = Object.values(clientAccounts).find(a => a.loginid === firstId);
+                // Use authorize.loginid (the actually-authorized account) to find the matching stored token.
+                // account_list[0] may be a different account (e.g. virtual) than what we authorized with.
+                const activeId = authorize?.loginid;
+                const matched =
+                    Object.values(clientAccounts).find(a => a.loginid === activeId) ||
+                    Object.values(clientAccounts).find(a => a.loginid === tokens.acct1);
                 if (matched) {
                     localStorage.setItem('authToken', matched.token);
                     localStorage.setItem('active_loginid', matched.loginid);

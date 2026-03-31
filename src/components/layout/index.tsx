@@ -41,8 +41,13 @@ const Layout = observer(() => {
         Object.values(checkClientAccount).some((account: any) => account.currency === currency) ||
         currency === 'demo' ||
         currency === '';
+
+    // If the user is already confirmed logged-in (accounts in localStorage + cookie + currency matches),
+    // skip the authenticating loading state entirely so balance shows immediately.
+    const alreadyLoggedIn = isLoggedInCookie && isClientAccountsPopulated && ifClientAccountHasCurrency;
+
     const [clientHasCurrency, setClientHasCurrency] = useState(ifClientAccountHasCurrency);
-    const [isAuthenticating, setIsAuthenticating] = useState(true); // Start with true to prevent flashing
+    const [isAuthenticating, setIsAuthenticating] = useState(!alreadyLoggedIn);
 
     // Expose setClientHasCurrency to window for global access
     useEffect(() => {
@@ -130,9 +135,6 @@ const Layout = observer(() => {
     }, []);
 
     useEffect(() => {
-        // Always set the currency in session storage, even if the user is not logged in
-        // This ensures the currency is available on the callback page
-        setIsAuthenticating(true);
         if (currency) {
             sessionStorage.setItem('query_param_currency', currency);
         }
@@ -141,6 +143,15 @@ const Layout = observer(() => {
         const shouldAuthenticate =
             (isLoggedInCookie && !isClientAccountsPopulated && !isEndpointPage && !isCallbackPage) ||
             checkOIDCEnabledWithMissingAccount;
+
+        // Only enter the loading/authenticating state when we genuinely need to re-authenticate.
+        // If the user is already logged-in (cookie + accounts + currency), keep the header stable.
+        if (!shouldAuthenticate) {
+            setIsAuthenticating(false);
+            return;
+        }
+
+        setIsAuthenticating(true);
 
         // Skip authentication when offline
         if (!isOnline) {
@@ -218,16 +229,16 @@ const Layout = observer(() => {
         }
     }, [isOnline, isAuthenticating]);
 
-    // Add a state to track if initial authentication check is complete
-    const [isInitialAuthCheckComplete, setIsInitialAuthCheckComplete] = useState(false);
+    // Track if initial authentication check is complete.
+    // If the user is already logged-in, mark it complete immediately (no wait needed).
+    const [isInitialAuthCheckComplete, setIsInitialAuthCheckComplete] = useState(alreadyLoggedIn);
 
     // Effect to mark initial auth check as complete after a short delay
     useEffect(() => {
         if (!isAuthenticating && !isInitialAuthCheckComplete) {
-            // Wait a bit to ensure all state updates have propagated
             const timer = setTimeout(() => {
                 setIsInitialAuthCheckComplete(true);
-            }, 500); // Give it enough time to stabilize
+            }, 300);
 
             return () => clearTimeout(timer);
         }
