@@ -99,26 +99,46 @@ const setLocalStorageToken = async (
 };
 
 export const AuthWrapper = () => {
-    const [isAuthComplete, setIsAuthComplete] = React.useState(true);
+    const [isAuthComplete, setIsAuthComplete] = React.useState(false);
     const { loginInfo, paramsToDelete } = URLUtils.getLoginInfoFromURL();
     const { isOnline } = useOfflineDetection();
 
     React.useEffect(() => {
-        // Never block the UI — show the app immediately and auth in background
-        setIsAuthComplete(true);
-
         const initializeAuth = async () => {
             try {
+                // Pass isOnline to setLocalStorageToken to handle offline mode properly
                 await setLocalStorageToken(loginInfo, paramsToDelete, setIsAuthComplete, isOnline);
                 URLUtils.filterSearchParams(['lang']);
+                setIsAuthComplete(true);
             } catch (error) {
                 console.error('[Auth] Authentication initialization failed:', error);
+                // Don't block the app if auth fails, especially when offline
+                setIsAuthComplete(true);
             }
         };
+
+        // If offline, set auth complete immediately but still run initializeAuth
+        // to save login info to localStorage for offline use
+        if (!isOnline) {
+            console.log('[Auth] Offline detected, proceeding with minimal auth');
+            setIsAuthComplete(true);
+        }
 
         initializeAuth();
     }, [loginInfo, paramsToDelete, isOnline]);
 
+    // Add timeout for offline scenarios to prevent infinite loading
+    React.useEffect(() => {
+        if (!isOnline && !isAuthComplete) {
+            console.log('[Auth] Offline detected, setting auth timeout');
+            const timeout = setTimeout(() => {
+                console.log('[Auth] Offline timeout reached, proceeding without full auth');
+                setIsAuthComplete(true);
+            }, 2000); // 2 second timeout for offline
+
+            return () => clearTimeout(timeout);
+        }
+    }, [isOnline, isAuthComplete]);
 
     const getLoadingMessage = () => {
         if (!isOnline) return localize('Loading offline mode...');
