@@ -65,8 +65,10 @@ const router = createBrowserRouter(
 
 function App() {
     React.useEffect(() => {
-        // Use the invalid token handler hook to automatically retrigger OIDC authentication
-        // when an invalid token is detected and the cookie logged state is true
+        // Hide the Capital Edge splash screen now that the app has mounted
+        if (typeof (window as any).__hideSplash === 'function') {
+            (window as any).__hideSplash();
+        }
 
         initSurvicate();
         window?.dataLayer?.push({ event: 'page_load' });

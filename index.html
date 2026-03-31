@@ -36,13 +36,66 @@
             :root {
                 font-size: 62.5%;
             }
+
+            #ce-splash {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background: #ffffff;
+                z-index: 99999;
+                gap: 20px;
+                transition: opacity 0.3s ease;
+            }
+
+            #ce-splash.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            #ce-splash .ce-logo-text {
+                font-family: Georgia, 'Times New Roman', serif;
+                font-size: 28px;
+                font-weight: 700;
+                color: #d4af37;
+                letter-spacing: 0.04em;
+            }
+
+            #ce-splash .ce-spinner {
+                width: 40px;
+                height: 40px;
+                border: 3px solid rgba(212, 175, 55, 0.2);
+                border-top-color: #d4af37;
+                border-radius: 50%;
+                animation: ce-spin 0.8s linear infinite;
+            }
+
+            @keyframes ce-spin {
+                to { transform: rotate(360deg); }
+            }
         </style>
     </head>
 
     <body class="body theme theme--light">
+        <div id="ce-splash">
+            <span class="ce-logo-text">Capital Edge</span>
+            <div class="ce-spinner"></div>
+        </div>
         <div id="modal_root" class="modal-root"></div>
         <div id="popup_root" class="popup-root"></div>
         <div id="root"></div>
+        <script>
+            // Hide the splash screen once the app mounts
+            window.__hideSplash = function () {
+                var splash = document.getElementById('ce-splash');
+                if (splash) {
+                    splash.classList.add('hidden');
+                    setTimeout(function () { splash.remove(); }, 350);
+                }
+            };
+        </script>
         <!-- LiveChat script -->
         <script type="text/javascript" defer>
             window.__lc = window.__lc || {};

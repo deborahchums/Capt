@@ -15,14 +15,36 @@ header.app-header,
     border-bottom: 1px solid var(--ce-dark-border) !important;
 }
 
-/* "Start Trading" golden button */
-.start-trading-btn,
-.start-trading-btn.dc-btn--primary {
+/* Auth action buttons */
+.auth-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Log in button (secondary/outlined) */
+.login-btn {
+    color: #e8e8e8 !important;
+    border-color: rgba(232, 232, 232, 0.4) !important;
+    background: transparent !important;
+
+    &:hover {
+        border-color: #e8e8e8 !important;
+        background: rgba(232, 232, 232, 0.1) !important;
+    }
+
+    span {
+        color: #e8e8e8 !important;
+    }
+}
+
+/* Sign up button (primary/gold) */
+.signup-btn,
+.signup-btn.dc-btn--primary {
     background: linear-gradient(135deg, #d4af37 0%, #f0cb5a 100%) !important;
     border-color: #d4af37 !important;
     color: #0a0f1e !important;
     font-weight: 700 !important;
-    letter-spacing: 0.03em !important;
 
     &:hover {
         background: linear-gradient(135deg, #f0cb5a 0%, #d4af37 100%) !important;

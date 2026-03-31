@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import PWAInstallButton from '@/components/pwa-install-button';
 import { generateOAuthURL, standalone_routes } from '@/components/shared';
+import { redirectToSignUp } from '@/components/shared/utils/login/login';
 import Button from '@/components/shared_ui/button';
 import useActiveAccount from '@/hooks/api/account/useActiveAccount';
 import { useOauth2 } from '@/hooks/auth/useOauth2';
@@ -136,8 +137,8 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
             return (
                 <div className='auth-actions'>
                     <Button
-                        className='start-trading-btn'
-                        primary
+                        className='login-btn'
+                        secondary
                         onClick={async () => {
                             clearAuthData(false);
                             const getQueryParams = new URLSearchParams(window.location.search);
@@ -172,7 +173,14 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                             }
                         }}
                     >
-                        <Localize i18n_default_text='Start Trading' />
+                        <Localize i18n_default_text='Log in' />
+                    </Button>
+                    <Button
+                        className='signup-btn'
+                        primary
+                        onClick={() => redirectToSignUp()}
+                    >
+                        <Localize i18n_default_text='Sign up' />
                     </Button>
                 </div>
             );
