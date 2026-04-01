@@ -143,7 +143,7 @@ const LandingPage = () => {
         } catch {
             // OIDC failed or not configured — fall back to legacy Deriv OAuth
         }
-        // Fallback: redirect to legacy OAuth (also reached if OIDC somehow didn't redirect)
+        // Fallback: redirect to legacy OAuth (generateOAuthURL now includes explicit redirect_uri)
         window.location.href = generateOAuthURL();
     };
 

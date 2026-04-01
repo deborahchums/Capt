@@ -191,5 +191,10 @@ export const generateOAuthURL = () => {
             }
         }
     }
+
+    // Always include an explicit redirect_uri so Deriv knows which registered
+    // callback to use (App ID 131540 has multiple registered URIs).
+    original_url.searchParams.set('redirect_uri', `${window.location.origin}/callback`);
+
     return original_url.toString() || oauth_url;
 };
