@@ -83,6 +83,20 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### Analysis Tool Rebuild (April 2026)
+- Completely rebuilt `src/pages/analysis-tool/` with 3 tabs:
+  - **Signal Analyzer**: scrolling log terminal + live Deriv tick subscription via `chart_api`, strategy/market selectors, real-time tick/digit display, Analyse button
+  - **Entry Scanner**: market selector, ticks input, prediction path scan (modal from Signal Analyzer + standalone tab)
+  - **Digit Stats**: real-time bar chart of last-digit distribution via live WebSocket ticks
+- Entry Scanner opens as a modal overlay from within Signal Analyzer
+- Files: `src/pages/analysis-tool/index.tsx`, `src/pages/analysis-tool/analysis-tool.scss`
+
+### Chart & Bot Builder Bug Fixes (April 2026)
+- Fixed `chart-store.ts` — `window.Blockly.derivWorkspace` → `window.Blockly?.derivWorkspace` (was throwing TypeError, preventing chart from ever rendering)
+- Fixed `chart.tsx` — null guards on `chart_api.api?.forgetAll`, `chart_api.api?.send`, `chart_api.api?.forget`
+- Fixed `blockly.js` — wrapped `modifyBlocklyWorkSpaceContextMenu()` in try-catch to prevent Blockly load failure
+- Fixed `workspace-wrapper.tsx` — replaced one-time check with 100ms polling loop for `window.Blockly?.derivWorkspace`
+
 ### Free Bots Feature (December 2025)
 - Added Free Bots page with 12 pre-built trading bot templates
 - Bot cards display with category filtering (Speed Trading, AI Trading, Pattern Analysis, etc.)
