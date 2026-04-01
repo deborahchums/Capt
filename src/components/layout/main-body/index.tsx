@@ -8,7 +8,11 @@ type TMainBodyProps = {
 };
 
 const MainBody: React.FC<TMainBodyProps> = ({ children }) => {
-    const current_theme = localStorage.getItem('theme') ?? 'light';
+    // Capital Edge always defaults to dark theme — set it on first load if not already stored
+    if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'dark');
+    }
+    const current_theme = localStorage.getItem('theme') ?? 'dark';
     const { ui } = useStore() ?? {
         ui: {
             setDevice: () => {},

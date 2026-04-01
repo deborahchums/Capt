@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { lazy, Suspense, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 import BalanceChip from './balance-chip';
+import HeaderWidgetBoundary from './header-widget-boundary';
 import { CurrencyIcon } from '@/components/currency/currency-icon';
 import { addComma, getDecimalPlaces } from '@/components/shared';
 import Popover from '@/components/shared_ui/popover';
@@ -215,7 +216,9 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                 zIndex='5'
             >
                 <div className='ce-mobile-switcher'>
-                    <BalanceChip />
+                    <HeaderWidgetBoundary>
+                        <BalanceChip />
+                    </HeaderWidgetBoundary>
                     <div className='ce-mobile-switcher__overlay' aria-hidden='true'>
                         {switcher}
                     </div>

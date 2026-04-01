@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import PWAInstallButton from '@/components/pwa-install-button';
 import AccountTypePill from './account-type-pill';
+import HeaderWidgetBoundary from './header-widget-boundary';
 import { generateOAuthURL, standalone_routes } from '@/components/shared';
 import { redirectToSignUp } from '@/components/shared/utils/login/login';
 import Button from '@/components/shared_ui/button';
@@ -219,8 +220,14 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                 {isDesktop && <PlatformSwitcher />}
             </Wrapper>
             <Wrapper variant='right'>
-                {!isDesktop && activeLoginid && <AccountTypePill />}
-                {renderAccountSection()}
+                {!isDesktop && activeLoginid && (
+                    <HeaderWidgetBoundary>
+                        <AccountTypePill />
+                    </HeaderWidgetBoundary>
+                )}
+                <HeaderWidgetBoundary>
+                    {renderAccountSection()}
+                </HeaderWidgetBoundary>
             </Wrapper>
             {/* <PWAInstallModalTest /> */}
         </Header>
