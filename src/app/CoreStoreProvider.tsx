@@ -96,6 +96,23 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
         }
     }, [accountList, activeAccount, activeLoginid, client]);
 
+    // Direct path: when authData arrives from a successful Deriv authorize call,
+    // hydrate the client store immediately without waiting for activeAccount lookup.
+    // This ensures client.is_logged_in becomes true even if accountList hasn't
+    // propagated to React state yet.
+    useEffect(() => {
+        if (!client || !authData?.loginid) return;
+        if (client.is_logged_in) return; // already set — nothing to do
+        const list = accountList.length > 0 ? accountList : (authData.account_list ?? []);
+        client.setLoginId(authData.loginid);
+        client.setAccountList(list);
+        client.setCurrency(authData.currency || '');
+        if (authData.balance != null) {
+            client.setBalance(String(authData.balance));
+        }
+        client.setIsLoggedIn(true);
+    }, [authData, client, accountList]);
+
     useEffect(() => {
         initFormErrorMessages(FORM_ERROR_MESSAGES());
 

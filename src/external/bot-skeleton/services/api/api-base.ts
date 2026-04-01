@@ -204,18 +204,25 @@ class APIBase {
             }
             this.subscribe();
             // this.getSelfExclusion(); commented this so we dont call it from two places
-        } catch (e) {
+        } catch (e: any) {
             console.error('Authorization failed:', e);
             this.is_authorized = false;
-            Cookies.set('logged_state', 'false', {
-                domain: window.location.hostname.split('.').slice(-2).join('.'),
-                expires: 30,
-                path: '/',
-                secure: true,
-            });
-            clearAuthData(false);
             setIsAuthorized(false);
-            globalObserver.emit('Error', e);
+            // Only nuke the session for a definitive InvalidToken error.
+            // Transient network / WebSocket errors should NOT log the user out —
+            // they will be retried when the socket reconnects.
+            if (e?.error?.code === 'InvalidToken' || e?.code === 'InvalidToken') {
+                Cookies.set('logged_state', 'false', {
+                    domain: window.location.hostname.split('.').slice(-2).join('.'),
+                    expires: 30,
+                    path: '/',
+                    secure: true,
+                });
+                clearAuthData(false);
+                window.location.replace('/');
+            } else {
+                globalObserver.emit('Error', e);
+            }
         } finally {
             setIsAuthorizing(false);
         }
