@@ -174,17 +174,25 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
     );
 
     useEffect(() => {
-        if (!isAuthorizing && client) {
-            const subscription = api_base?.api?.onMessage().subscribe(handleMessages);
-            msg_listener.current = { unsubscribe: subscription?.unsubscribe };
+        // Keep the onMessage listener attached at all times once the connection is open —
+        // including DURING authorization. The balance subscription response arrives while
+        // isAuthorizing is true, so gating on !isAuthorizing drops the balance message.
+        if (client && api_base?.api) {
+            if (msg_listener.current) {
+                msg_listener.current.unsubscribe?.();
+                msg_listener.current = null;
+            }
+            const subscription = api_base.api.onMessage().subscribe(handleMessages);
+            msg_listener.current = subscription ? { unsubscribe: () => subscription.unsubscribe() } : null;
         }
 
         return () => {
             if (msg_listener.current) {
                 msg_listener.current.unsubscribe?.();
+                msg_listener.current = null;
             }
         };
-    }, [connectionStatus, handleMessages, isAuthorizing, isAuthorized, client]);
+    }, [connectionStatus, handleMessages, client]);
 
     useEffect(() => {
         if (!isAuthorizing && isAuthorized && !accountInitialization.current && client) {
@@ -219,6 +227,18 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
             api_base.api.getAccountStatus().then((res: TSocketResponseData<'get_account_status'>) => {
                 client?.setAccountStatus(res.get_account_status);
             });
+
+            // Fallback: directly fetch all-account balances once, in case the
+            // subscription message arrived before the onMessage listener was ready.
+            (api_base.api as any)
+                .send({ balance: 1, account: 'all' })
+                .then((res: TSocketResponseData<'balance'>) => {
+                    const bal = (res as any)?.balance;
+                    if (bal?.accounts) {
+                        client?.setAllAccountsBalance(bal);
+                    }
+                })
+                .catch(() => {/* silent — subscription already covers it */});
         }
     }, [isAuthorizing, isAuthorized, client]);
 
