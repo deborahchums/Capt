@@ -2,7 +2,7 @@
     &__logo {
         padding-inline-start: 1.2rem;
         padding-inline-end: 2rem;
-        border-inline-end: 1px solid rgba(212, 175, 55, 0.2);
+        border-inline-end: 1px solid rgba(61, 186, 126, 0.2);
         display: flex;
         align-items: center;
         text-decoration: none;
@@ -17,6 +17,13 @@
     text-decoration: none;
     overflow: visible;
 
+    &__img {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
     &__wordmark {
         display: flex;
         flex-direction: column;
@@ -26,24 +33,23 @@
     }
 
     &__name {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #d4af37;
-        letter-spacing: 0.1em;
+        font-size: 1.1rem;
+        font-weight: 900;
+        color: #ffffff;
+        letter-spacing: 0.12em;
         white-space: nowrap;
-        font-family: 'Georgia', serif;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
         line-height: 1.1;
         text-transform: uppercase;
     }
 
     &__tagline {
-        font-size: 0.95rem;
-        font-weight: 400;
-        color: rgba(255, 255, 255, 0.75);
-        letter-spacing: 0.04em;
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: #3dba7e;
+        letter-spacing: 0.1em;
         white-space: nowrap;
-        font-family: 'Georgia', serif;
-        font-style: italic;
-        line-height: 1.1;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        line-height: 1.3;
     }
 }

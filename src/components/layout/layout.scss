@@ -12,7 +12,7 @@
     .deriv-header {
         background: #0a0f1e !important;
         height: 4.9rem;
-        border-bottom: 1px solid rgba(212, 175, 55, 0.18) !important;
+        border-bottom: 1px solid rgba(61, 186, 126, 0.18) !important;
 
         @include mobile-or-tablet-screen {
             height: 4rem;
@@ -37,7 +37,7 @@
             color: rgba(255, 255, 255, 0.85) !important;
 
             &:hover {
-                color: #d4af37 !important;
+                color: #3dba7e !important;
             }
         }
 
@@ -52,21 +52,21 @@
 
         /* Login / Signup buttons */
         .login-btn {
-            border-color: rgba(212, 175, 55, 0.55) !important;
-            color: #d4af37 !important;
+            border-color: rgba(61, 186, 126, 0.55) !important;
+            color: #3dba7e !important;
             background: transparent !important;
         }
 
         .signup-btn {
-            background: linear-gradient(135deg, #d4af37, #f0cc55) !important;
+            background: linear-gradient(135deg, #3dba7e, #5dd49a) !important;
             color: #0a0f1e !important;
             border: none !important;
         }
 
         /* Deposit button */
         .deposit-button {
-            border-color: #d4af37 !important;
-            color: #d4af37 !important;
+            border-color: #3dba7e !important;
+            color: #3dba7e !important;
             background: transparent !important;
         }
     }

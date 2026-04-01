@@ -13,13 +13,8 @@ const LOADING_MESSAGES = [
     'Almost ready...',
 ];
 
-const LOGO_SVG = (
-    <svg width='38' height='38' viewBox='0 0 38 38' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <rect width='38' height='38' rx='9' fill='#0a0e1a' />
-        <polygon points='19,3 35,12 35,26 19,35 3,26 3,12' fill='none' stroke='#d4af37' strokeWidth='2' />
-        <polygon points='19,9 29,15 29,23 19,29 9,23 9,15' fill='#d4af37' opacity='0.2' />
-        <polygon points='19,14 25,18 25,22 19,26 13,22 13,18' fill='#d4af37' />
-    </svg>
+const LOGO_IMG = (
+    <img src='/capital-edge-logo.png' alt='Capital Edge' style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
 );
 
 const STATS = [
@@ -154,13 +149,13 @@ const LandingPage = () => {
             <div className={`ce-loading${loadingHidden ? ' ce-loading--hidden' : ''}`}>
                 <div className='ce-loading__brand'>
                     <div className='ce-loading__logo-row'>
-                        {LOGO_SVG}
+                        {LOGO_IMG}
                         <div className='ce-loading__name'>
                             <span className='ce-loading__name-cap'>Capital</span>
                             <span className='ce-loading__name-edge'> Edge</span>
                         </div>
                     </div>
-                    <div className='ce-loading__tagline'>Your Ultimate Trading Partner</div>
+                    <div className='ce-loading__tagline'>built for traders</div>
                 </div>
 
                 {/* Animated candlestick bars */}
@@ -188,12 +183,12 @@ const LandingPage = () => {
             {/* ===== NAVBAR ===== */}
             <nav className='ce-nav'>
                 <div className='ce-nav__logo'>
-                    {LOGO_SVG}
+                    {LOGO_IMG}
                     <div>
                         <div className='ce-nav__name'>
-                            <span className='gold'>Capital</span> Edge
+                            <span className='green'>Capital</span> Edge
                         </div>
-                        <span className='ce-nav__tag'>Your Ultimate Trading Partner</span>
+                        <span className='ce-nav__tag'>built for traders</span>
                     </div>
                 </div>
                 <button className='ce-btn-primary' onClick={handleLogin} disabled={loggingIn}>

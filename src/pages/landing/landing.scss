@@ -7,15 +7,18 @@
     --db-bg: #0a0e1a;
     --db-card: #121826;
     --db-border: #1e2d40;
-    --db-gold: #d4af37;
-    --db-gold2: #f0cc55;
+    --db-gold: #3dba7e;
+    --db-gold2: #5dd49a;
     --db-cyan: #00bcd4;
-    --db-green: #00e676;
+    --db-green: #3dba7e;
     --db-white: #ffffff;
     --db-silver: #b0bec5;
     --db-muted: #546e7a;
-    --db-gold-glow: rgba(212, 175, 55, 0.25);
+    --db-gold-glow: rgba(61, 186, 126, 0.25);
 }
+
+/* Brand green utility class used in navbar */
+.green { color: #3dba7e; }
 
 /* ---------- Reset ---------- */
 .ce-landing {
