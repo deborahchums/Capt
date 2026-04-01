@@ -26,7 +26,7 @@ type TClientInformation = {
 };
 const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ children }) => {
     const currentDomain = useMemo(() => '.' + window.location.hostname.split('.').slice(-2).join('.'), []);
-    const { isAuthorizing, isAuthorized, connectionStatus, accountList, activeLoginid } = useApiBase();
+    const { isAuthorizing, isAuthorized, connectionStatus, accountList, activeLoginid, authData } = useApiBase();
 
     const appInitialization = useRef(false);
     const accountInitialization = useRef(false);
@@ -67,6 +67,26 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeAccount?.loginid, client?.all_accounts_balance]);
+
+    useEffect(() => {
+        if (authData?.loginid && authData?.balance !== undefined && client && !client.all_accounts_balance) {
+            client.setAllAccountsBalance({
+                accounts: {
+                    [authData.loginid]: {
+                        balance: authData.balance,
+                        currency: authData.currency,
+                        converted_amount: authData.balance,
+                        demo_account: authData.is_virtual ? 1 : 0,
+                        status: 1,
+                        type: 'deriv',
+                    },
+                },
+                balance: authData.balance,
+                currency: authData.currency,
+                loginid: authData.loginid,
+            } as any);
+        }
+    }, [authData, client]);
 
     useEffect(() => {
         if (client && activeAccount) {
