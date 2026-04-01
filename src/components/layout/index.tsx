@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Cookies from 'js-cookie';
 import { observer } from 'mobx-react-lite';
@@ -16,6 +16,8 @@ import Footer from './footer';
 import AppHeader from './header';
 import Body from './main-body';
 import './layout.scss';
+
+const LandingPage = lazy(() => import('@/pages/landing'));
 
 const Layout = observer(() => {
     const { isDesktop } = useDevice();
@@ -139,7 +141,11 @@ const Layout = observer(() => {
             sessionStorage.setItem('query_param_currency', currency);
         }
 
-        const checkOIDCEnabledWithMissingAccount = !isEndpointPage && !isCallbackPage && !clientHasCurrency;
+        // Only try to re-authenticate when the user has previously logged in (cookie present)
+        // but their session data is missing or stale.  Never auto-redirect a fresh visitor —
+        // they will see the landing page and log in from there.
+        const checkOIDCEnabledWithMissingAccount =
+            isLoggedInCookie && !isEndpointPage && !isCallbackPage && !clientHasCurrency;
         const shouldAuthenticate =
             (isLoggedInCookie && !isClientAccountsPopulated && !isEndpointPage && !isCallbackPage) ||
             checkOIDCEnabledWithMissingAccount;
@@ -243,6 +249,16 @@ const Layout = observer(() => {
             return () => clearTimeout(timer);
         }
     }, [isAuthenticating, isInitialAuthCheckComplete]);
+
+    // Show the landing/marketing page to visitors who are not logged in.
+    // Skip this for the callback and endpoint pages which have their own content.
+    if (!isLoggedInCookie && !isCallbackPage && !isEndpointPage) {
+        return (
+            <Suspense fallback={null}>
+                <LandingPage />
+            </Suspense>
+        );
+    }
 
     return (
         <div
