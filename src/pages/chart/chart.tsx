@@ -35,6 +35,7 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
     const { common, ui } = useStore();
     const { chart_store, run_panel, dashboard } = useStore();
     const [isSafari, setIsSafari] = useState(false);
+    const [isApiReady, setIsApiReady] = useState(!!chart_api.api);
 
     const {
         chart_type,
@@ -54,25 +55,39 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
     const { is_drawer_open } = run_panel;
     const { is_chart_modal_visible } = dashboard;
     const settings = {
-        assetInformation: false, // ui.is_chart_asset_info_visible,
+        assetInformation: false,
         countdown: true,
-        isHighestLowestMarkerEnabled: false, // TODO: Pending UI,
+        isHighestLowestMarkerEnabled: false,
         language: common.current_language.toLowerCase(),
         position: ui.is_chart_layout_default ? 'bottom' : 'left',
         theme: ui.is_dark_mode_on ? 'dark' : 'light',
     };
+
     useEffect(() => {
-        // Safari browser detection
         const isSafariBrowser = () => {
             const ua = navigator.userAgent.toLowerCase();
             return ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1 && ua.indexOf('android') === -1;
         };
-
         setIsSafari(isSafariBrowser());
 
         return () => {
             chart_api.api?.forgetAll('ticks');
         };
+    }, []);
+
+    // Poll until chart_api.api is initialised (created by api_base.init → chart_api.init)
+    useEffect(() => {
+        if (chart_api.api) {
+            setIsApiReady(true);
+            return;
+        }
+        const interval = setInterval(() => {
+            if (chart_api.api) {
+                setIsApiReady(true);
+                clearInterval(interval);
+            }
+        }, 200);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -111,14 +126,35 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
                     });
             }
         } catch (e) {
-            // eslint-disable-next-line no-console
-            (e as TError)?.error?.code === 'MarketIsClosed' && callback([]); //if market is closed sending a empty array  to resolve
+            (e as TError)?.error?.code === 'MarketIsClosed' && callback([]);
             console.log((e as TError)?.error?.message);
         }
     };
 
+    // Show a styled loading state while the chart WebSocket is connecting
+    if (!isApiReady) {
+        return (
+            <div
+                className={classNames('dashboard__chart-wrapper', {
+                    'dashboard__chart-wrapper--expanded': is_drawer_open && isDesktop,
+                    'dashboard__chart-wrapper--modal': is_chart_modal_visible && isDesktop,
+                })}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '1.2rem', color: '#94a3b8' }}
+            >
+                <svg width='40' height='40' viewBox='0 0 40 40' fill='none'>
+                    <circle cx='20' cy='20' r='16' stroke='rgba(61,186,126,0.2)' strokeWidth='4' />
+                    <circle cx='20' cy='20' r='16' stroke='#3dba7e' strokeWidth='4' strokeLinecap='round'
+                        strokeDasharray='25 75' transform='rotate(-90 20 20)'>
+                        <animateTransform attributeName='transform' type='rotate' from='0 20 20' to='360 20 20' dur='1s' repeatCount='indefinite' />
+                    </circle>
+                </svg>
+                <span style={{ fontSize: '1.3rem' }}>Connecting to chart server…</span>
+            </div>
+        );
+    }
+
     if (!symbol) return null;
-    const is_connection_opened = !!chart_api?.api;
+
     return (
         <div
             className={classNames('dashboard__chart-wrapper', {
@@ -154,7 +190,7 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
                 settings={settings}
                 symbol={symbol}
                 topWidgets={() => <ChartTitle onChange={onSymbolChange} />}
-                isConnectionOpened={is_connection_opened}
+                isConnectionOpened={true}
                 getMarketsOrder={getMarketsOrder}
                 isLive
                 leftMargin={80}

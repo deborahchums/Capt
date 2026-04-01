@@ -6,15 +6,17 @@ import './copy-trading.scss';
 
 const CopyTrading = observer(() => {
     const { client } = useStore() ?? {};
-    const { activeLoginid } = useApiBase();
+    const { activeLoginid, authData } = useApiBase();
     const [token, setToken] = useState('');
     const [clients, setClients] = useState<string[]>([]);
     const [isRunning, setIsRunning] = useState(false);
     const [syncing, setSyncing] = useState(false);
 
-    const accountId = activeLoginid || client?.loginid || 'CR0000000';
-    const balance = client?.balance || '0.00';
-    const currency = client?.currency || 'USD';
+    // Read loginid from multiple sources — reactive first, then localStorage fallback
+    const storedLoginid = localStorage.getItem('active_loginid') || '';
+    const accountId = activeLoginid || authData?.loginid || client?.loginid || storedLoginid || '—';
+    const balance = client?.balance ?? (authData?.balance != null ? String(authData.balance) : '0.00');
+    const currency = client?.currency || authData?.currency || 'USD';
 
     const handleAdd = () => {
         const val = token.trim();
