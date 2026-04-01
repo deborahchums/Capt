@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { generateOAuthURL } from '@/components/shared';
-import { clearAuthData, handleOidcAuthFailure } from '@/utils/auth-utils';
 import { requestOidcAuthentication } from '@deriv-com/auth-client';
 import './landing.scss';
 
@@ -136,17 +135,16 @@ const LandingPage = () => {
     const handleLogin = async () => {
         if (loggingIn) return;
         setLoggingIn(true);
-        clearAuthData(false);
-        const currency = sessionStorage.getItem('query_param_currency') || 'USD';
         try {
+            // Try OIDC first — this redirects the browser; the await never resolves on success
             await requestOidcAuthentication({
                 redirectCallbackUri: `${window.location.origin}/callback`,
-                state: { account: currency },
             });
         } catch {
-            try { handleOidcAuthFailure(new Error('OIDC')); } catch { /* ignore */ }
-            window.location.replace(generateOAuthURL());
+            // OIDC failed or not configured — fall back to legacy Deriv OAuth
         }
+        // Fallback: redirect to legacy OAuth (also reached if OIDC somehow didn't redirect)
+        window.location.href = generateOAuthURL();
     };
 
     return (
