@@ -218,6 +218,18 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                 {isDesktop && <PlatformSwitcher />}
             </Wrapper>
             <Wrapper variant='right'>
+                {!isDesktop && (
+                    <a
+                        className='ce-support-btn'
+                        href='https://wa.me/254700000000'
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title='WhatsApp Support'
+                        aria-label='Contact support'
+                    >
+                        📞
+                    </a>
+                )}
                 {!isDesktop && <PWAInstallButton variant='primary' size='medium' />}
                 {renderAccountSection()}
             </Wrapper>
