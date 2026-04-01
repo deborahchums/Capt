@@ -704,6 +704,231 @@
     display: inline-block;
 }
 
+/* ===== MOBILE & TABLET RESPONSIVE ===== */
+@media (max-width: 767px) {
+
+    /* --- Navbar --- */
+    .ce-nav {
+        padding: 0 1.2rem;
+        height: 56px;
+
+        .ce-nav__logo-img { height: 36px; }
+
+        .ce-btn-primary {
+            padding: 0.55rem 1.2rem;
+            font-size: 0.9rem;
+            min-height: 40px;
+        }
+    }
+
+    /* --- Loading screen --- */
+    .ce-loading {
+        gap: 1rem;
+
+        .ce-loading__spinner-wrap {
+            width: 90px;
+            height: 90px;
+        }
+
+        .ce-loading__logo-img {
+            width: 52px;
+            height: 52px;
+        }
+
+        .ce-loading__name { font-size: 1.5rem; }
+    }
+
+    /* --- Hero --- */
+    .ce-hero {
+        padding: 90px 1.2rem 50px;
+
+        .ce-hero__trust {
+            font-size: 0.82rem;
+            margin-bottom: 1.4rem;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 8vw, 2.6rem);
+            margin-bottom: 1.2rem;
+        }
+
+        .ce-hero__sub {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .ce-hero__ctas {
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ce-btn-cta,
+        .ce-btn-ghost {
+            width: 100%;
+            max-width: 340px;
+            justify-content: center;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            min-height: 48px;
+        }
+
+        .ce-hero__note { font-size: 0.82rem; }
+    }
+
+    /* --- Stats --- */
+    .ce-stats {
+        padding: 2rem 1.2rem;
+
+        .ce-stats__inner { gap: 1.2rem; }
+
+        .ce-stat__num {
+            font-size: 1.8rem;
+        }
+
+        .ce-stat__label { font-size: 0.82rem; }
+    }
+
+    /* --- Sections --- */
+    .ce-section {
+        padding: 3.5rem 1.2rem;
+
+        .ce-section__header {
+            margin-bottom: 2.5rem;
+
+            h2 { font-size: clamp(1.6rem, 6vw, 2rem); }
+
+            p { font-size: 0.95rem; }
+        }
+    }
+
+    /* --- Feature cards --- */
+    .ce-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .ce-feat-card {
+        padding: 1.4rem;
+
+        h3 { font-size: 1.1rem; }
+
+        p {
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+    }
+
+    /* --- Testimonials --- */
+    .ce-testi-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+    .ce-testi-card {
+        padding: 1.4rem;
+
+        .quote {
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+    }
+
+    /* --- Why section --- */
+    .ce-why {
+        .ce-why__inner {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        h2 { font-size: clamp(1.6rem, 6vw, 2rem); margin-bottom: 0.8rem; }
+
+        p { font-size: 0.95rem; margin-bottom: 1.4rem; }
+
+        .ce-btn-cta {
+            width: 100%;
+            max-width: 340px;
+            justify-content: center;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            min-height: 48px;
+        }
+
+        .ce-why__item {
+            padding: 0.9rem 1rem;
+
+            .text { font-size: 0.9rem; }
+        }
+    }
+
+    /* --- CTA Banner --- */
+    .ce-cta-banner .inner {
+        padding: 3.5rem 1.2rem;
+
+        h2 { font-size: clamp(1.6rem, 6vw, 2rem); }
+
+        p { font-size: 0.95rem; margin-bottom: 1.8rem; }
+
+        .ce-btn-cta {
+            width: 100%;
+            max-width: 340px;
+            justify-content: center;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            min-height: 48px;
+        }
+
+        .trust-row {
+            gap: 1rem;
+            flex-direction: column;
+            align-items: center;
+
+            span { font-size: 0.82rem; }
+        }
+    }
+
+    /* --- Disclaimer --- */
+    .ce-disclaimer {
+        padding: 2rem 1.2rem;
+
+        p, li { font-size: 0.82rem; }
+    }
+
+    /* --- Footer --- */
+    .ce-footer {
+        padding: 1.4rem 1.2rem;
+        font-size: 0.8rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+
+/* ===== SMALL PHONES (≤ 400px) ===== */
+@media (max-width: 400px) {
+    .ce-nav {
+        padding: 0 1rem;
+
+        .ce-nav__logo-img { height: 30px; }
+    }
+
+    .ce-hero {
+        padding: 80px 1rem 40px;
+
+        h1 { font-size: clamp(1.8rem, 8vw, 2.2rem); }
+    }
+
+    .ce-btn-cta,
+    .ce-btn-ghost,
+    .ce-why .ce-btn-cta,
+    .ce-cta-banner .ce-btn-cta {
+        max-width: 100%;
+    }
+
+    .ce-stats__inner {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .ce-stat__num { font-size: 1.6rem; }
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes db-fade-in {
     from { opacity: 0; }
