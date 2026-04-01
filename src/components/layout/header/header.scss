@@ -1,7 +1,21 @@
 @use 'components/shared/styles/constants' as *;
 @use 'components/shared/styles/mixins' as *;
 
+// Mobile header: logo + [Real/Demo pill] [balance chip]
 .app-header {
+    @media (max-width: 767px) {
+        // Give the right wrapper a small gap so the two dropdowns breathe
+        .deriv-header__wrapper--right {
+            gap: 6px;
+            padding-inline-end: 8px;
+        }
+
+        // Reduce the logo-side border on mobile
+        .app-header__logo {
+            padding-inline-end: 6px;
+        }
+    }
+
     &__account-settings {
         padding-inline-end: 1.2rem;
         border-inline-end: 0.1rem solid var(--general-section-1);

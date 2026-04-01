@@ -1,0 +1,56 @@
+.ce-account-type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s;
+    white-space: nowrap;
+    height: 30px;
+
+    &--real {
+        background: rgba(61, 186, 126, 0.15);
+        color: #3dba7e;
+        border: 1px solid rgba(61, 186, 126, 0.35);
+
+        &:hover {
+            background: rgba(61, 186, 126, 0.25);
+        }
+    }
+
+    &--demo {
+        background: rgba(93, 212, 154, 0.12);
+        color: #5dd49a;
+        border: 1px solid rgba(93, 212, 154, 0.3);
+
+        &:hover {
+            background: rgba(93, 212, 154, 0.2);
+        }
+    }
+
+    &--switching {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+
+    &__label {
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    &__icon {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+}

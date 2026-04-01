@@ -1,0 +1,46 @@
+.ce-balance-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    white-space: nowrap;
+    height: 30px;
+    max-width: 160px;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+
+    &__flag {
+        font-size: 14px;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    &__amount {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text-prominent, #fff);
+        letter-spacing: 0.2px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 1;
+    }
+
+    &__arrow {
+        width: 10px;
+        height: 6px;
+        color: var(--text-less-prominent, #aaa);
+        flex-shrink: 0;
+    }
+}

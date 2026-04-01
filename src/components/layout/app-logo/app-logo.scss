@@ -23,6 +23,10 @@
         object-fit: contain;
         flex-shrink: 0;
         display: none; /* both hidden by default; shown by theme class below */
+
+        @media (max-width: 767px) {
+            height: 36px;
+        }
     }
 }
 

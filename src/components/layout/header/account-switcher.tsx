@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { lazy, Suspense, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
+import BalanceChip from './balance-chip';
 import { CurrencyIcon } from '@/components/currency/currency-icon';
 import { addComma, getDecimalPlaces } from '@/components/shared';
 import Popover from '@/components/shared_ui/popover';
@@ -161,13 +162,51 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
         window.history.pushState({}, '', `${window.location.pathname}?${search_params.toString()}`);
     };
 
-    return (
-        activeAccount &&
-        (has_wallet ? (
+    const switcher = (
+        <UIAccountSwitcher
+            activeAccount={activeAccount}
+            isDisabled={is_stop_button_visible}
+            tabsLabels={tabs_labels}
+            modalContentStyle={{
+                content: {
+                    top: isDesktop ? '30%' : '50%',
+                    borderRadius: '10px',
+                },
+            }}
+        >
+            <UIAccountSwitcher.Tab title={tabs_labels.real}>
+                <RenderAccountItems
+                    modifiedCRAccountList={modifiedCRAccountList as TModifiedAccount[]}
+                    modifiedMFAccountList={modifiedMFAccountList as TModifiedAccount[]}
+                    switchAccount={switchAccount}
+                    activeLoginId={activeAccount?.loginid}
+                    client={client}
+                />
+            </UIAccountSwitcher.Tab>
+            <UIAccountSwitcher.Tab title={tabs_labels.demo}>
+                <RenderAccountItems
+                    modifiedVRTCRAccountList={modifiedVRTCRAccountList as TModifiedAccount[]}
+                    switchAccount={switchAccount}
+                    isVirtual
+                    activeLoginId={activeAccount?.loginid}
+                    client={client}
+                />
+            </UIAccountSwitcher.Tab>
+        </UIAccountSwitcher>
+    );
+
+    if (!activeAccount) return null;
+
+    if (has_wallet) {
+        return (
             <Suspense fallback={<Loader />}>
                 <AccountInfoWallets is_dialog_on={is_accounts_switcher_on} toggleDialog={toggleAccountsDialog} />
             </Suspense>
-        ) : (
+        );
+    }
+
+    if (!isDesktop) {
+        return (
             <Popover
                 className='run-panel__info'
                 classNameBubble='run-panel__info--bubble'
@@ -175,38 +214,26 @@ const AccountSwitcher = observer(({ activeAccount }: TAccountSwitcher) => {
                 message={account_switcher_disabled_message}
                 zIndex='5'
             >
-                <UIAccountSwitcher
-                    activeAccount={activeAccount}
-                    isDisabled={is_stop_button_visible}
-                    tabsLabels={tabs_labels}
-                    modalContentStyle={{
-                        content: {
-                            top: isDesktop ? '30%' : '50%',
-                            borderRadius: '10px',
-                        },
-                    }}
-                >
-                    <UIAccountSwitcher.Tab title={tabs_labels.real}>
-                        <RenderAccountItems
-                            modifiedCRAccountList={modifiedCRAccountList as TModifiedAccount[]}
-                            modifiedMFAccountList={modifiedMFAccountList as TModifiedAccount[]}
-                            switchAccount={switchAccount}
-                            activeLoginId={activeAccount?.loginid}
-                            client={client}
-                        />
-                    </UIAccountSwitcher.Tab>
-                    <UIAccountSwitcher.Tab title={tabs_labels.demo}>
-                        <RenderAccountItems
-                            modifiedVRTCRAccountList={modifiedVRTCRAccountList as TModifiedAccount[]}
-                            switchAccount={switchAccount}
-                            isVirtual
-                            activeLoginId={activeAccount?.loginid}
-                            client={client}
-                        />
-                    </UIAccountSwitcher.Tab>
-                </UIAccountSwitcher>
+                <div className='ce-mobile-switcher'>
+                    <BalanceChip />
+                    <div className='ce-mobile-switcher__overlay' aria-hidden='true'>
+                        {switcher}
+                    </div>
+                </div>
             </Popover>
-        ))
+        );
+    }
+
+    return (
+        <Popover
+            className='run-panel__info'
+            classNameBubble='run-panel__info--bubble'
+            alignment='bottom'
+            message={account_switcher_disabled_message}
+            zIndex='5'
+        >
+            {switcher}
+        </Popover>
     );
 });
 

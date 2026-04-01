@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import PWAInstallButton from '@/components/pwa-install-button';
+import AccountTypePill from './account-type-pill';
 import { generateOAuthURL, standalone_routes } from '@/components/shared';
 import { redirectToSignUp } from '@/components/shared/utils/login/login';
 import Button from '@/components/shared_ui/button';
@@ -218,19 +219,7 @@ const AppHeader = observer(({ isAuthenticating }: TAppHeaderProps) => {
                 {isDesktop && <PlatformSwitcher />}
             </Wrapper>
             <Wrapper variant='right'>
-                {!isDesktop && (
-                    <a
-                        className='ce-support-btn'
-                        href='https://wa.me/254700000000'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        title='WhatsApp Support'
-                        aria-label='Contact support'
-                    >
-                        📞
-                    </a>
-                )}
-                {!isDesktop && <PWAInstallButton variant='primary' size='medium' />}
+                {!isDesktop && activeLoginid && <AccountTypePill />}
                 {renderAccountSection()}
             </Wrapper>
             {/* <PWAInstallModalTest /> */}
