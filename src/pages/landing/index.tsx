@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { generateOAuthURL } from '@/components/shared';
+import { requestOidcAuthentication } from '@deriv-com/auth-client';
 import './landing.scss';
 
 // ── Stars data (generated once) ────────────────────────────────────────────
@@ -119,10 +120,19 @@ const LandingPage = () => {
         return () => clearInterval(iv);
     }, []);
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (loggingIn) return;
         setLoggingIn(true);
-        window.location.href = generateOAuthURL();
+        try {
+            // Use OIDC authentication (same flow as the rest of the app).
+            // Falls back to legacy OAuth URL if OIDC fails.
+            await requestOidcAuthentication({
+                redirectCallbackUri: `${window.location.origin}/callback`,
+            });
+        } catch {
+            // If OIDC fails, fall back to legacy OAuth redirect
+            window.location.href = generateOAuthURL();
+        }
     };
 
     return (

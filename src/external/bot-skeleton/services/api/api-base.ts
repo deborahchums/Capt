@@ -168,12 +168,20 @@ class APIBase {
             const { authorize, error } = await this.api.authorize(this.token);
             if (error) {
                 if (error.code === 'InvalidToken') {
-                    const is_tmb_enabled = window.is_tmb_enabled === true;
-                    if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
-                        globalObserver.emit('InvalidToken', { error });
-                    } else {
-                        clearAuthData();
-                    }
+                    // Token is expired or invalid — clear everything and send the user back
+                    // to the landing page so they can log in again.
+                    Cookies.set('logged_state', 'false', {
+                        domain: window.location.hostname.split('.').slice(-2).join('.'),
+                        expires: 30,
+                        path: '/',
+                        secure: true,
+                    });
+                    clearAuthData(false); // clear localStorage, don't reload yet
+                    setIsAuthorizing(false);
+                    setIsAuthorized(false);
+                    // Navigate to root — Layout will then show the landing page.
+                    window.location.replace('/');
+                    return error;
                 } else {
                     console.error('Authorization error:', error);
                 }
@@ -199,7 +207,13 @@ class APIBase {
         } catch (e) {
             console.error('Authorization failed:', e);
             this.is_authorized = false;
-            clearAuthData();
+            Cookies.set('logged_state', 'false', {
+                domain: window.location.hostname.split('.').slice(-2).join('.'),
+                expires: 30,
+                path: '/',
+                secure: true,
+            });
+            clearAuthData(false);
             setIsAuthorized(false);
             globalObserver.emit('Error', e);
         } finally {
