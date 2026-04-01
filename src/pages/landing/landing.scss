@@ -1,967 +1,539 @@
-/* ===================================================
-   Capital Edge — Landing Page (DBTraders-inspired)
-   Deep Navy #0a0e1a | Gold #d4af37 | Cyan #00bcd4
-   =================================================== */
+// ═══════════════════════════════════════════════════════════════════
+//  Capital Edge Landing — DBTraders-inspired redesign
+//  Root font: 62.5% so 1rem = 10px
+// ═══════════════════════════════════════════════════════════════════
 
-:root {
-    --db-bg: #0a0e1a;
-    --db-card: #121826;
-    --db-border: #1e2d40;
-    --db-gold: #3dba7e;
-    --db-gold2: #5dd49a;
-    --db-cyan: #00bcd4;
-    --db-green: #3dba7e;
-    --db-white: #ffffff;
-    --db-silver: #b0bec5;
-    --db-muted: #546e7a;
-    --db-gold-glow: rgba(61, 186, 126, 0.25);
-}
-
-/* Brand green utility class used in navbar */
-.green { color: #3dba7e; }
-
-/* ---------- Reset ---------- */
-.ce-landing {
+// ── Root ──────────────────────────────────────────────────────────
+.ce2 {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--db-bg);
-    color: var(--db-white);
+    color: #fff;
     min-height: 100vh;
     overflow-x: hidden;
     line-height: 1.6;
+    background: #08090f;
 
     *, *::before, *::after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
-
-    a { text-decoration: none; }
 }
 
-/* ===== LOADING SCREEN ===== */
-.ce-loading {
+// ── Utility ───────────────────────────────────────────────────────
+.ce2-grad {
+    background: linear-gradient(135deg, #3dba7e, #5dd49a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.ce2-spinner {
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 2.5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ce2-spin 0.7s linear infinite;
+    vertical-align: middle;
+}
+
+@keyframes ce2-spin {
+    to { transform: rotate(360deg); }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  LOADING SCREEN
+// ═══════════════════════════════════════════════════════════════════
+
+.ce2-loading {
     position: fixed;
     inset: 0;
-    background: var(--db-bg);
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.2rem;
-    z-index: 9999;
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    gap: 2rem;
+    overflow: hidden;
+    // Background: deep dark navy, glowing from bottom corners like dbtraders
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 110%, rgba(0, 180, 140, 0.25) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(120, 40, 180, 0.25) 0%, transparent 70%),
+        #08090f;
+    transition: opacity 0.6s ease, transform 0.6s ease;
 
-    &.ce-loading--hidden {
+    &--out {
         opacity: 0;
+        transform: scale(1.05);
         pointer-events: none;
-        transform: translateY(-30px);
     }
+}
 
-    /* ---- Spinner ring + logo ---- */
-    .ce-loading__spinner-wrap {
-        position: relative;
-        width: 110px;
-        height: 110px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: db-fade-in 0.5s ease both;
+// Star canvas
+.ce2-stars {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+@keyframes ce2-twinkle {
+    from { opacity: 0.15; }
+    to   { opacity: 0.9; }
+}
+
+// ── Progress ring ────────────────────────────────────────────────
+.ce2-ring-wrap {
+    position: relative;
+    width: 22rem;
+    height: 22rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 24px rgba(0, 229, 204, 0.35));
+}
+
+.ce2-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ce2-ring-center {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.ce2-ring-pct {
+    font-size: 5.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00e5cc, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.ce2-ring-lbl {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    color: #64748b;
+}
+
+// ── Brand ────────────────────────────────────────────────────────
+.ce2-brand {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 0.04em;
+
+    &__primary {
+        color: #3dba7e;
     }
+    &__secondary {
+        color: #fff;
+    }
+}
 
-    .ce-loading__ring {
-        position: absolute;
-        inset: 0;
+// ── Tagline ──────────────────────────────────────────────────────
+.ce2-tagline {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    background: linear-gradient(90deg, #00e5cc, #60a5fa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+}
+
+// ── Status pill ──────────────────────────────────────────────────
+.ce2-pill {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 99px;
+    padding: 0.8rem 1.8rem;
+    backdrop-filter: blur(8px);
+
+    &__icon {
+        width: 2.4rem;
+        height: 2.4rem;
         border-radius: 50%;
-        border: 3px solid transparent;
-        border-top-color: var(--db-gold);
-        border-right-color: rgba(61, 186, 126, 0.3);
-        animation: db-spin-ring 1.2s linear infinite;
-    }
-
-    .ce-loading__ring--2 {
-        inset: 10px;
-        border-width: 2px;
-        border-top-color: transparent;
-        border-bottom-color: var(--db-cyan);
-        border-left-color: rgba(0, 188, 212, 0.25);
-        animation: db-spin-ring 1.8s linear infinite reverse;
-    }
-
-    .ce-loading__logo-img {
-        width: 64px;
-        height: 64px;
         object-fit: contain;
-        border-radius: 10px;
-        position: relative;
-        z-index: 1;
     }
 
-    /* ---- Brand name ---- */
-    .ce-loading__brand {
-        text-align: center;
-        animation: db-fade-in 0.6s ease 0.15s both;
+    &__text {
+        font-size: 1.35rem;
+        color: #e2e8f0;
+        white-space: nowrap;
     }
 
-    .ce-loading__name {
-        font-size: 1.8rem;
-        font-weight: 900;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        line-height: 1.1;
-        margin-bottom: 0.25rem;
-
-        .ce-loading__name-cap { color: var(--db-gold); }
-        .ce-loading__name-edge { color: var(--db-white); }
-    }
-
-    .ce-loading__tagline {
-        font-size: 0.7rem;
-        color: var(--db-silver);
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-    }
-
-    /* ---- Candlestick chart bars ---- */
-    .ce-loading__bars {
+    &__dots {
         display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        gap: 6px;
-        height: 44px;
-        animation: db-fade-in 0.6s ease 0.2s both;
-
-        .ce-loading__bar {
-            width: 8px;
-            border-radius: 3px;
-            background: linear-gradient(to top, var(--db-cyan), var(--db-gold));
-            animation: db-bar-pulse 1.2s ease-in-out infinite alternate;
-
-            &:nth-child(1) { height: 18px; animation-delay: 0s; }
-            &:nth-child(2) { height: 32px; animation-delay: 0.15s; }
-            &:nth-child(3) { height: 26px; animation-delay: 0.3s; }
-            &:nth-child(4) { height: 40px; animation-delay: 0.45s; }
-            &:nth-child(5) { height: 20px; animation-delay: 0.6s; }
-            &:nth-child(6) { height: 30px; animation-delay: 0.75s; }
-            &:nth-child(7) { height: 14px; animation-delay: 0.9s; }
-        }
-    }
-
-    /* ---- Progress track ---- */
-    .ce-loading__track {
-        width: 300px;
-        height: 5px;
-        background: var(--db-border);
-        border-radius: 50px;
-        overflow: hidden;
-        animation: db-fade-in 0.6s ease 0.3s both;
-
-        @media (max-width: 380px) { width: 240px; }
-
-        .ce-loading__fill {
-            height: 100%;
-            border-radius: 50px;
-            background: linear-gradient(90deg, var(--db-gold), var(--db-cyan));
-            box-shadow: 0 0 10px rgba(61, 186, 126, 0.5);
-            animation: db-progress 3s ease-in-out forwards;
-        }
-    }
-
-    /* ---- Cycling status text ---- */
-    .ce-loading__status {
-        font-size: 0.76rem;
-        color: var(--db-silver);
-        letter-spacing: 0.06em;
-        min-height: 1.2em;
-        text-align: center;
-        transition: opacity 0.3s ease;
-        animation: db-fade-in 0.6s ease 0.35s both;
-    }
-
-    /* ---- Footer badges ---- */
-    .ce-loading__badges {
-        display: flex;
-        gap: 1.5rem;
-        margin-top: 0.4rem;
-        animation: db-fade-in 0.6s ease 0.5s both;
+        gap: 0.4rem;
+        align-items: center;
 
         span {
-            font-size: 0.68rem;
-            color: var(--db-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+            display: block;
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: ce2-dot 1.2s infinite;
+            &:nth-child(2) { animation-delay: 0.2s; }
+            &:nth-child(3) { animation-delay: 0.4s; }
         }
     }
 }
 
-/* ===== NAVBAR ===== */
-.ce-nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
+@keyframes ce2-dot {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); }
+    40%            { opacity: 1;   transform: scale(1); }
+}
+
+// ── Feature chips ────────────────────────────────────────────────
+.ce2-chips {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 1.6rem;
+}
+
+.ce2-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 99px;
+    padding: 0.6rem 1.2rem;
+    backdrop-filter: blur(6px);
+
+    &__icon { font-size: 1.4rem; line-height: 1; }
+
+    &__text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    &__label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #e2e8f0;
+    }
+
+    &__sub {
+        font-size: 0.95rem;
+        color: #64748b;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  LANDING PAGE
+// ═══════════════════════════════════════════════════════════════════
+
+.ce2-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 110%, rgba(0, 120, 80, 0.2) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(80, 20, 120, 0.18) 0%, transparent 70%),
+        #08090f;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    &--visible { opacity: 1; }
+}
+
+// ── Chart background art ─────────────────────────────────────────
+.ce2-chart-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 42rem;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.ce2-chart-svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.3;
+}
+
+// ── Navbar ──────────────────────────────────────────────────────
+.ce2-nav {
+    position: relative;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
-    height: 64px;
-    background: rgba(10, 14, 26, 0.92);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(61, 186, 126, 0.12);
+    padding: 1.4rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 
-    .ce-nav__logo {
+    &__brand {
         display: flex;
         align-items: center;
-        cursor: pointer;
+        gap: 0.8rem;
     }
 
-    /* Theme-aware nav logo images */
-    .ce-nav__logo-img {
-        height: 48px;
-        width: auto;
+    &__logo {
+        width: 2.8rem;
+        height: 2.8rem;
         object-fit: contain;
-        display: none;
     }
 
-    .ce-btn-primary {
-        padding: 0.5rem 1.5rem;
-        border: none;
-        border-radius: 6px;
-        background: linear-gradient(135deg, var(--db-gold), var(--db-gold2));
-        color: #0a0e1a;
-        font-size: 0.875rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: opacity 0.2s, transform 0.15s;
-
-        &:hover { opacity: 0.88; transform: translateY(-1px); }
-        &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    }
-}
-
-/* Landing page always has dark nav — show white logo */
-.ce-landing .ce-nav__logo-img--dark { display: block; }
-.ce-landing .ce-nav__logo-img--light { display: none; }
-
-/* ===== HERO ===== */
-.ce-hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 100px 1.5rem 60px;
-    position: relative;
-    overflow: hidden;
-
-    /* Ambient glow */
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background:
-            radial-gradient(ellipse 65% 55% at 50% 30%, rgba(212,175,55,0.07) 0%, transparent 70%),
-            radial-gradient(ellipse 50% 50% at 20% 80%, rgba(0,188,212,0.05) 0%, transparent 60%);
-        pointer-events: none;
-    }
-
-    /* Subtle grid */
-    .ce-hero__grid {
-        position: absolute;
-        inset: 0;
-        background-image:
-            linear-gradient(rgba(212,175,55,0.035) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(212,175,55,0.035) 1px, transparent 1px);
-        background-size: 55px 55px;
-        pointer-events: none;
-        mask-image: radial-gradient(ellipse 80% 55% at 50% 50%, black 30%, transparent 100%);
-    }
-
-    .ce-hero__trust {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.38rem 1rem;
-        border: 1px solid rgba(212,175,55,0.28);
-        border-radius: 100px;
-        background: rgba(212,175,55,0.08);
-        font-size: 0.78rem;
-        color: var(--db-gold);
-        margin-bottom: 1.8rem;
-        animation: db-fade-up 0.6s ease both;
-
-        .dot {
-            width: 6px; height: 6px;
-            background: var(--db-gold);
-            border-radius: 50%;
-            animation: db-blink 2s infinite;
-        }
-    }
-
-    h1 {
-        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    &__name {
+        font-size: 1.8rem;
         font-weight: 800;
-        line-height: 1.1;
-        letter-spacing: -0.02em;
-        max-width: 780px;
-        margin-bottom: 1.4rem;
-        animation: db-fade-up 0.6s ease 0.1s both;
-
-        .gold {
-            background: linear-gradient(135deg, var(--db-gold), var(--db-gold2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-    }
-
-    .ce-hero__sub {
-        font-size: 1.05rem;
-        color: var(--db-silver);
-        max-width: 520px;
-        margin-bottom: 2.5rem;
-        animation: db-fade-up 0.6s ease 0.2s both;
-    }
-
-    .ce-hero__ctas {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 1.2rem;
-        animation: db-fade-up 0.6s ease 0.3s both;
-    }
-
-    .ce-btn-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.9rem 2.2rem;
-        background: linear-gradient(135deg, var(--db-gold), var(--db-gold2));
-        color: #0a0e1a;
-        font-size: 1rem;
-        font-weight: 700;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        box-shadow: 0 4px 20px var(--db-gold-glow);
-        transition: transform 0.15s, box-shadow 0.2s;
-
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(212,175,55,0.4);
-        }
-
-        &:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
-    }
-
-    .ce-btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.9rem 2.2rem;
-        border: 1px solid rgba(212,175,55,0.35);
-        color: var(--db-white);
-        font-size: 1rem;
-        font-weight: 500;
-        border-radius: 8px;
-        background: transparent;
-        cursor: pointer;
-        transition: background 0.2s, border-color 0.2s;
-
-        &:hover { background: rgba(212,175,55,0.08); border-color: var(--db-gold); }
-    }
-
-    .ce-hero__note {
-        font-size: 0.78rem;
-        color: var(--db-muted);
-        animation: db-fade-up 0.6s ease 0.4s both;
-    }
-}
-
-/* ===== STATS BAR ===== */
-.ce-stats {
-    background: var(--db-card);
-    border-top: 1px solid var(--db-border);
-    border-bottom: 1px solid var(--db-border);
-    padding: 2.5rem 1.5rem;
-
-    .ce-stats__inner {
-        max-width: 860px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
-        text-align: center;
-
-        @media (max-width: 600px) { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .ce-stat__num {
-        font-size: 2rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, var(--db-gold), var(--db-gold2));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         line-height: 1;
-        margin-bottom: 0.25rem;
     }
 
-    .ce-stat__label {
-        font-size: 0.8rem;
-        color: var(--db-silver);
-    }
+    &__cap  { color: #3dba7e; }
+    &__edge { color: #fff; }
 }
 
-/* ===== SECTION COMMONS ===== */
-.ce-section {
-    padding: 5rem 1.5rem;
-
-    .ce-section__header {
-        text-align: center;
-        max-width: 580px;
-        margin: 0 auto 3.5rem;
-
-        .ce-tag {
-            display: inline-block;
-            padding: 0.28rem 0.9rem;
-            border: 1px solid rgba(212,175,55,0.3);
-            background: rgba(212,175,55,0.08);
-            border-radius: 100px;
-            font-size: 0.72rem;
-            color: var(--db-gold);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-
-        h2 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.9rem;
-        }
-
-        p { color: var(--db-silver); font-size: 0.95rem; }
-    }
+.ce2-btn-login {
+    padding: 0.9rem 1.8rem;
+    border-radius: 99px;
+    background: #3dba7e;
+    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    white-space: nowrap;
+    &:hover:not(:disabled) { background: #5dd49a; transform: translateY(-1px); }
+    &:disabled { opacity: 0.7; cursor: wait; }
 }
 
-/* ===== FEATURE CARDS ===== */
-.ce-features-grid {
-    max-width: 960px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-
-    @media (max-width: 620px) { grid-template-columns: 1fr; }
-}
-
-.ce-feat-card {
-    background: var(--db-card);
-    border: 1px solid var(--db-border);
-    border-radius: 16px;
-    padding: 1.8rem;
-    transition: border-color 0.25s, transform 0.2s;
-
-    &:hover { border-color: rgba(212,175,55,0.35); transform: translateY(-3px); }
-
-    .ce-feat-card__icon {
-        width: 50px; height: 50px;
-        background: rgba(212,175,55,0.1);
-        border: 1px solid rgba(212,175,55,0.25);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        margin-bottom: 1.2rem;
-    }
-
-    .ce-feat-card__sub {
-        font-size: 0.7rem;
-        color: var(--db-gold);
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 0.35rem;
-    }
-
-    h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.65rem; }
-
-    p { font-size: 0.88rem; color: var(--db-silver); line-height: 1.7; }
-}
-
-/* ===== TESTIMONIALS ===== */
-.ce-testimonials { background: var(--db-card); }
-
-.ce-testi-grid {
-    max-width: 960px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-
-    @media (max-width: 720px) { grid-template-columns: 1fr; }
-}
-
-.ce-testi-card {
-    background: var(--db-bg);
-    border: 1px solid var(--db-border);
-    border-radius: 16px;
-    padding: 1.6rem;
+// ── Hero ─────────────────────────────────────────────────────────
+.ce2-hero {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
-    .stars { color: var(--db-gold); font-size: 0.85rem; letter-spacing: 2px; }
-
-    .quote {
-        font-size: 0.88rem;
-        color: rgba(255,255,255,0.82);
-        line-height: 1.75;
-        flex: 1;
-    }
-
-    .author {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-
-        img {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(212,175,55,0.3);
-        }
-
-        .author__name { font-size: 0.875rem; font-weight: 600; }
-        .author__role { font-size: 0.72rem; color: var(--db-silver); }
-    }
-}
-
-/* ===== WHY CHOOSE ===== */
-.ce-why {
-    .ce-why__inner {
-        max-width: 900px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4rem;
-        align-items: center;
-
-        @media (max-width: 720px) { grid-template-columns: 1fr; gap: 2rem; }
-    }
-
-    h2 {
-        font-size: clamp(1.7rem, 4vw, 2.3rem);
-        font-weight: 800;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
-        margin-bottom: 1rem;
-
-        .gold {
-            background: linear-gradient(135deg, var(--db-gold), var(--db-gold2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-    }
-
-    p { color: var(--db-silver); font-size: 0.92rem; line-height: 1.7; margin-bottom: 1.8rem; }
-
-    .ce-btn-cta { /* same class, inherits from above */ }
-
-    .ce-why__list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.85rem;
-    }
-
-    .ce-why__item {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem 1.2rem;
-        background: var(--db-card);
-        border: 1px solid var(--db-border);
-        border-radius: 12px;
-        transition: border-color 0.2s;
-
-        &:hover { border-color: rgba(212,175,55,0.3); }
-
-        .icon { font-size: 1.05rem; flex-shrink: 0; margin-top: 2px; }
-
-        .text {
-            font-size: 0.86rem;
-            color: rgba(255,255,255,0.82);
-            line-height: 1.5;
-
-            strong { display: block; color: #fff; font-weight: 600; margin-bottom: 2px; }
-        }
-    }
-}
-
-/* ===== CTA BANNER ===== */
-.ce-cta-banner {
-    background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(0,188,212,0.05) 100%);
-    border-top: 1px solid rgba(212,175,55,0.14);
-    border-bottom: 1px solid rgba(212,175,55,0.14);
-
-    .inner {
-        max-width: 680px;
-        margin: 0 auto;
-        text-align: center;
-        padding: 5rem 1.5rem;
-
-        h2 {
-            font-size: clamp(1.7rem, 4vw, 2.5rem);
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
-        }
-
-        p { color: var(--db-silver); font-size: 0.95rem; margin-bottom: 2.2rem; }
-
-        .trust-row {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 1.4rem;
-
-            span {
-                font-size: 0.76rem;
-                color: var(--db-muted);
-                display: flex;
-                align-items: center;
-                gap: 0.3rem;
-            }
-        }
-    }
-}
-
-/* ===== RISK DISCLAIMER ===== */
-.ce-disclaimer {
-    background: rgba(212,175,55,0.04);
-    border-top: 1px solid var(--db-border);
-    padding: 2.5rem 1.5rem;
-
-    .inner {
-        max-width: 860px;
-        margin: 0 auto;
-    }
-
-    h4 {
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: var(--db-gold);
-        margin-bottom: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    p, li {
-        font-size: 0.78rem;
-        color: var(--db-muted);
-        line-height: 1.7;
-    }
-
-    ul {
-        margin-top: 0.5rem;
-        padding-left: 1.2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-}
-
-/* ===== FOOTER ===== */
-.ce-footer {
-    padding: 1.6rem 1.5rem;
-    border-top: 1px solid var(--db-border);
+    align-items: center;
     text-align: center;
-    font-size: 0.76rem;
-    color: var(--db-muted);
+    padding: 5rem 2rem 4rem;
+    gap: 1.8rem;
+}
+
+.ce2-trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.6rem;
+    border: 1.5px solid #3dba7e;
+    border-radius: 99px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #e2e8f0;
+    background: rgba(61, 186, 126, 0.08);
+}
+
+.ce2-hero__title {
+    font-size: clamp(4rem, 10vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+}
+
+.ce2-hero__sub {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.ce2-hero__desc {
+    font-size: 1.45rem;
+    color: #94a3b8;
+    max-width: 52rem;
+}
+
+.ce2-btn-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.4rem 3.2rem;
+    border-radius: 99px;
+    background: #3dba7e;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 0 20px rgba(61, 186, 126, 0.35);
+    &:hover:not(:disabled) {
+        background: #5dd49a;
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(61, 186, 126, 0.5);
+    }
+    &:disabled { opacity: 0.7; cursor: wait; }
+}
+
+.ce2-hero__checks {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #94a3b8;
+    span { display: flex; align-items: center; gap: 0.4rem; }
+}
+
+// ── Stats grid ──────────────────────────────────────────────────
+.ce2-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 38rem;
+}
+
+.ce2-stat {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.2rem;
+    padding: 1.8rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+
+    &__val {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: #3dba7e;
+    }
+
+    &__lbl {
+        font-size: 1.15rem;
+        color: #64748b;
+        text-align: center;
+    }
+}
+
+// ── Features ─────────────────────────────────────────────────────
+.ce2-section {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 2rem;
+
+    &__title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 2.8rem;
+    }
+}
+
+.ce2-feats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    max-width: 64rem;
+    margin: 0 auto;
+
+    @media (max-width: 500px) { grid-template-columns: 1fr; }
+}
+
+.ce2-feat {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.4rem;
+    padding: 2rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    &__icon { font-size: 2.4rem; }
+
+    strong { font-size: 1.5rem; color: #e2e8f0; }
+
+    p { font-size: 1.25rem; color: #64748b; }
+}
+
+// ── CTA band ─────────────────────────────────────────────────────
+.ce2-cta-band {
+    position: relative;
+    z-index: 2;
+    background: rgba(61, 186, 126, 0.08);
+    border-top: 1px solid rgba(61, 186, 126, 0.2);
+    border-bottom: 1px solid rgba(61, 186, 126, 0.2);
+    padding: 5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+
+    h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; }
+    p  { font-size: 1.4rem; color: #94a3b8; }
+}
+
+.ce2-cta-checks {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #64748b;
+}
+
+// ── Disclaimer ───────────────────────────────────────────────────
+.ce2-disclaimer {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    font-size: 1.15rem;
+    color: #475569;
+    text-align: center;
+    max-width: 72rem;
+    margin: 0 auto;
+    line-height: 1.7;
+
+    strong { color: #64748b; }
+}
+
+// ── Footer ───────────────────────────────────────────────────────
+.ce2-footer {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 2rem;
+    padding: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 1.2rem;
+    color: #475569;
     flex-wrap: wrap;
 }
 
-/* ===== SPINNER ===== */
-.ce-spinner {
-    width: 18px; height: 18px;
-    border: 2px solid rgba(10,14,26,0.3);
-    border-top-color: #0a0e1a;
-    border-radius: 50%;
-    animation: db-spin 0.7s linear infinite;
-    display: inline-block;
-}
-
-/* ===== MOBILE & TABLET RESPONSIVE ===== */
-@media (max-width: 767px) {
-
-    /* --- Navbar --- */
-    .ce-nav {
-        padding: 0 1.2rem;
-        height: 56px;
-
-        .ce-nav__logo-img { height: 36px; }
-
-        .ce-btn-primary {
-            padding: 0.55rem 1.2rem;
-            font-size: 0.9rem;
-            min-height: 40px;
-        }
-    }
-
-    /* --- Loading screen --- */
-    .ce-loading {
-        gap: 1rem;
-
-        .ce-loading__spinner-wrap {
-            width: 90px;
-            height: 90px;
-        }
-
-        .ce-loading__logo-img {
-            width: 52px;
-            height: 52px;
-        }
-
-        .ce-loading__name { font-size: 1.5rem; }
-    }
-
-    /* --- Hero --- */
-    .ce-hero {
-        padding: 90px 1.2rem 50px;
-
-        .ce-hero__trust {
-            font-size: 0.82rem;
-            margin-bottom: 1.4rem;
-        }
-
-        h1 {
-            font-size: clamp(2rem, 8vw, 2.6rem);
-            margin-bottom: 1.2rem;
-        }
-
-        .ce-hero__sub {
-            font-size: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .ce-hero__ctas {
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .ce-btn-cta,
-        .ce-btn-ghost {
-            width: 100%;
-            max-width: 340px;
-            justify-content: center;
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            min-height: 48px;
-        }
-
-        .ce-hero__note { font-size: 0.82rem; }
-    }
-
-    /* --- Stats --- */
-    .ce-stats {
-        padding: 2rem 1.2rem;
-
-        .ce-stats__inner { gap: 1.2rem; }
-
-        .ce-stat__num {
-            font-size: 1.8rem;
-        }
-
-        .ce-stat__label { font-size: 0.82rem; }
-    }
-
-    /* --- Sections --- */
-    .ce-section {
-        padding: 3.5rem 1.2rem;
-
-        .ce-section__header {
-            margin-bottom: 2.5rem;
-
-            h2 { font-size: clamp(1.6rem, 6vw, 2rem); }
-
-            p { font-size: 0.95rem; }
-        }
-    }
-
-    /* --- Feature cards --- */
-    .ce-features-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .ce-feat-card {
-        padding: 1.4rem;
-
-        h3 { font-size: 1.1rem; }
-
-        p {
-            font-size: 0.92rem;
-            line-height: 1.65;
-        }
-    }
-
-    /* --- Testimonials --- */
-    .ce-testi-grid { grid-template-columns: 1fr; gap: 1rem; }
-
-    .ce-testi-card {
-        padding: 1.4rem;
-
-        .quote {
-            font-size: 0.92rem;
-            line-height: 1.7;
-        }
-    }
-
-    /* --- Why section --- */
-    .ce-why {
-        .ce-why__inner {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        h2 { font-size: clamp(1.6rem, 6vw, 2rem); margin-bottom: 0.8rem; }
-
-        p { font-size: 0.95rem; margin-bottom: 1.4rem; }
-
-        .ce-btn-cta {
-            width: 100%;
-            max-width: 340px;
-            justify-content: center;
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            min-height: 48px;
-        }
-
-        .ce-why__item {
-            padding: 0.9rem 1rem;
-
-            .text { font-size: 0.9rem; }
-        }
-    }
-
-    /* --- CTA Banner --- */
-    .ce-cta-banner .inner {
-        padding: 3.5rem 1.2rem;
-
-        h2 { font-size: clamp(1.6rem, 6vw, 2rem); }
-
-        p { font-size: 0.95rem; margin-bottom: 1.8rem; }
-
-        .ce-btn-cta {
-            width: 100%;
-            max-width: 340px;
-            justify-content: center;
-            padding: 1rem 1.5rem;
-            font-size: 1rem;
-            min-height: 48px;
-        }
-
-        .trust-row {
-            gap: 1rem;
-            flex-direction: column;
-            align-items: center;
-
-            span { font-size: 0.82rem; }
-        }
-    }
-
-    /* --- Disclaimer --- */
-    .ce-disclaimer {
-        padding: 2rem 1.2rem;
-
-        p, li { font-size: 0.82rem; }
-    }
-
-    /* --- Footer --- */
-    .ce-footer {
-        padding: 1.4rem 1.2rem;
-        font-size: 0.8rem;
-        flex-direction: column;
-        gap: 0.25rem;
-    }
-}
-
-/* ===== SMALL PHONES (≤ 400px) ===== */
-@media (max-width: 400px) {
-    .ce-nav {
-        padding: 0 1rem;
-
-        .ce-nav__logo-img { height: 30px; }
-    }
-
-    .ce-hero {
-        padding: 80px 1rem 40px;
-
-        h1 { font-size: clamp(1.8rem, 8vw, 2.2rem); }
-    }
-
-    .ce-btn-cta,
-    .ce-btn-ghost,
-    .ce-why .ce-btn-cta,
-    .ce-cta-banner .ce-btn-cta {
-        max-width: 100%;
-    }
-
-    .ce-stats__inner {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-
-    .ce-stat__num { font-size: 1.6rem; }
-}
-
-/* ===== ANIMATIONS ===== */
-@keyframes db-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes db-fade-up {
-    from { opacity: 0; transform: translateY(22px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes db-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-}
-
-@keyframes db-bar-pulse {
-    from { opacity: 0.4; transform: scaleY(0.8); }
-    to { opacity: 1; transform: scaleY(1); }
-}
-
-@keyframes db-progress {
-    0%   { width: 0%; }
-    25%  { width: 35%; }
-    55%  { width: 65%; }
-    80%  { width: 85%; }
-    100% { width: 100%; }
-}
-
-@keyframes db-spin {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes db-spin-ring {
-    to { transform: rotate(360deg); }
+// ── Mobile tweaks ─────────────────────────────────────────────────
+@media (max-width: 480px) {
+    .ce2-chips { gap: 0.6rem; }
+    .ce2-chip { padding: 0.5rem 1rem; }
+    .ce2-chip__label { font-size: 1.1rem; }
+    .ce2-ring-wrap { width: 18rem; height: 18rem; }
+    .ce2-ring-pct { font-size: 4rem; }
+    .ce2-brand { font-size: 2.4rem; }
+    .ce2-tagline { font-size: 0.95rem; letter-spacing: 0.12em; }
+    .ce2-pill__text { font-size: 1.15rem; }
+    .ce2-stats { max-width: 32rem; }
 }
