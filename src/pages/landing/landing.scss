@@ -47,7 +47,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.2rem;
     z-index: 9999;
     transition: opacity 0.7s ease, transform 0.7s ease;
 
@@ -57,99 +57,135 @@
         transform: translateY(-30px);
     }
 
-    /* Brand */
-    .ce-loading__brand {
-        text-align: center;
-        animation: db-fade-in 0.6s ease;
-
-        .ce-loading__logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 0.35rem;
-        }
-
-        .ce-loading__name {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-
-            .ce-loading__name-cap { color: var(--db-gold); }
-            .ce-loading__name-edge { color: var(--db-white); }
-        }
-
-        .ce-loading__tagline {
-            font-size: 0.72rem;
-            color: var(--db-silver);
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-        }
+    /* ---- Spinner ring + logo ---- */
+    .ce-loading__spinner-wrap {
+        position: relative;
+        width: 110px;
+        height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: db-fade-in 0.5s ease both;
     }
 
-    /* Candlestick chart bars */
+    .ce-loading__ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: var(--db-gold);
+        border-right-color: rgba(61, 186, 126, 0.3);
+        animation: db-spin-ring 1.2s linear infinite;
+    }
+
+    .ce-loading__ring--2 {
+        inset: 10px;
+        border-width: 2px;
+        border-top-color: transparent;
+        border-bottom-color: var(--db-cyan);
+        border-left-color: rgba(0, 188, 212, 0.25);
+        animation: db-spin-ring 1.8s linear infinite reverse;
+    }
+
+    .ce-loading__logo-img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        border-radius: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* ---- Brand name ---- */
+    .ce-loading__brand {
+        text-align: center;
+        animation: db-fade-in 0.6s ease 0.15s both;
+    }
+
+    .ce-loading__name {
+        font-size: 1.8rem;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        line-height: 1.1;
+        margin-bottom: 0.25rem;
+
+        .ce-loading__name-cap { color: var(--db-gold); }
+        .ce-loading__name-edge { color: var(--db-white); }
+    }
+
+    .ce-loading__tagline {
+        font-size: 0.7rem;
+        color: var(--db-silver);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    /* ---- Candlestick chart bars ---- */
     .ce-loading__bars {
         display: flex;
         align-items: flex-end;
         justify-content: center;
-        gap: 7px;
-        height: 52px;
-        animation: db-fade-in 0.6s ease 0.15s both;
+        gap: 6px;
+        height: 44px;
+        animation: db-fade-in 0.6s ease 0.2s both;
 
         .ce-loading__bar {
-            width: 9px;
+            width: 8px;
             border-radius: 3px;
             background: linear-gradient(to top, var(--db-cyan), var(--db-gold));
             animation: db-bar-pulse 1.2s ease-in-out infinite alternate;
 
-            &:nth-child(1) { height: 22px; animation-delay: 0s; }
-            &:nth-child(2) { height: 38px; animation-delay: 0.15s; }
-            &:nth-child(3) { height: 30px; animation-delay: 0.3s; }
-            &:nth-child(4) { height: 46px; animation-delay: 0.45s; }
-            &:nth-child(5) { height: 24px; animation-delay: 0.6s; }
-            &:nth-child(6) { height: 34px; animation-delay: 0.75s; }
-            &:nth-child(7) { height: 18px; animation-delay: 0.9s; }
+            &:nth-child(1) { height: 18px; animation-delay: 0s; }
+            &:nth-child(2) { height: 32px; animation-delay: 0.15s; }
+            &:nth-child(3) { height: 26px; animation-delay: 0.3s; }
+            &:nth-child(4) { height: 40px; animation-delay: 0.45s; }
+            &:nth-child(5) { height: 20px; animation-delay: 0.6s; }
+            &:nth-child(6) { height: 30px; animation-delay: 0.75s; }
+            &:nth-child(7) { height: 14px; animation-delay: 0.9s; }
         }
     }
 
-    /* Progress track */
+    /* ---- Progress track ---- */
     .ce-loading__track {
-        width: 280px;
-        height: 6px;
+        width: 300px;
+        height: 5px;
         background: var(--db-border);
         border-radius: 50px;
         overflow: hidden;
         animation: db-fade-in 0.6s ease 0.3s both;
 
+        @media (max-width: 380px) { width: 240px; }
+
         .ce-loading__fill {
             height: 100%;
             border-radius: 50px;
             background: linear-gradient(90deg, var(--db-gold), var(--db-cyan));
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 10px rgba(61, 186, 126, 0.5);
             animation: db-progress 3s ease-in-out forwards;
         }
     }
 
-    /* Cycling status text */
+    /* ---- Cycling status text ---- */
     .ce-loading__status {
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         color: var(--db-silver);
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
         min-height: 1.2em;
         text-align: center;
         transition: opacity 0.3s ease;
-        animation: db-fade-in 0.6s ease 0.4s both;
+        animation: db-fade-in 0.6s ease 0.35s both;
     }
 
-    /* Footer badges */
+    /* ---- Footer badges ---- */
     .ce-loading__badges {
         display: flex;
         gap: 1.5rem;
+        margin-top: 0.4rem;
         animation: db-fade-in 0.6s ease 0.5s both;
 
         span {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--db-muted);
             display: flex;
             align-items: center;
@@ -170,31 +206,20 @@
     height: 64px;
     background: rgba(10, 14, 26, 0.92);
     backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+    border-bottom: 1px solid rgba(61, 186, 126, 0.12);
 
     .ce-nav__logo {
         display: flex;
         align-items: center;
-        gap: 0.7rem;
         cursor: pointer;
+    }
 
-        .ce-nav__name {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-
-            .gold { color: var(--db-gold); }
-        }
-
-        .ce-nav__tag {
-            font-size: 0.58rem;
-            color: var(--db-silver);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            display: block;
-            margin-top: -2px;
-        }
+    /* Theme-aware nav logo images */
+    .ce-nav__logo-img {
+        height: 48px;
+        width: auto;
+        object-fit: contain;
+        display: none;
     }
 
     .ce-btn-primary {
@@ -212,6 +237,10 @@
         &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     }
 }
+
+/* Landing page always has dark nav — show white logo */
+.ce-landing .ce-nav__logo-img--dark { display: block; }
+.ce-landing .ce-nav__logo-img--light { display: none; }
 
 /* ===== HERO ===== */
 .ce-hero {
@@ -705,5 +734,9 @@
 }
 
 @keyframes db-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes db-spin-ring {
     to { transform: rotate(360deg); }
 }

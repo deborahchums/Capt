@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { generateOAuthURL } from '@/components/shared';
-import { requestOidcAuthentication } from '@deriv-com/auth-client';
 import './landing.scss';
 
 /* ---- Data ---- */
@@ -13,9 +12,6 @@ const LOADING_MESSAGES = [
     'Almost ready...',
 ];
 
-const LOGO_IMG = (
-    <img src='/capital-edge-logo.png' alt='Capital Edge' style={{ width: 44, height: 44, objectFit: 'contain', flexShrink: 0 }} />
-);
 
 const STATS = [
     { end: 50000, suffix: 'K+', divisor: 1000, label: 'Active Traders' },
@@ -127,18 +123,10 @@ const LandingPage = () => {
         return () => obs.disconnect();
     }, [loadingHidden]);
 
-    const handleLogin = async () => {
+    const handleLogin = () => {
         if (loggingIn) return;
         setLoggingIn(true);
-        try {
-            // Try OIDC first — this redirects the browser; the await never resolves on success
-            await requestOidcAuthentication({
-                redirectCallbackUri: `${window.location.origin}/callback`,
-            });
-        } catch {
-            // OIDC failed or not configured — fall back to legacy Deriv OAuth
-        }
-        // Fallback: redirect to legacy OAuth (generateOAuthURL now includes explicit redirect_uri)
+        // Redirect directly to Deriv OAuth with explicit redirect_uri
         window.location.href = generateOAuthURL();
     };
 
@@ -147,13 +135,19 @@ const LandingPage = () => {
 
             {/* ===== LOADING SCREEN ===== */}
             <div className={`ce-loading${loadingHidden ? ' ce-loading--hidden' : ''}`}>
+
+                {/* Spinner ring + logo */}
+                <div className='ce-loading__spinner-wrap'>
+                    <div className='ce-loading__ring' />
+                    <div className='ce-loading__ring ce-loading__ring--2' />
+                    <img src='/capital-edge-logo-dark.png' alt='Capital Edge' className='ce-loading__logo-img' />
+                </div>
+
+                {/* Brand name */}
                 <div className='ce-loading__brand'>
-                    <div className='ce-loading__logo-row'>
-                        {LOGO_IMG}
-                        <div className='ce-loading__name'>
-                            <span className='ce-loading__name-cap'>Capital</span>
-                            <span className='ce-loading__name-edge'> Edge</span>
-                        </div>
+                    <div className='ce-loading__name'>
+                        <span className='ce-loading__name-cap'>CAPITAL</span>
+                        <span className='ce-loading__name-edge'> EDGE</span>
                     </div>
                     <div className='ce-loading__tagline'>built for traders</div>
                 </div>
@@ -183,13 +177,8 @@ const LandingPage = () => {
             {/* ===== NAVBAR ===== */}
             <nav className='ce-nav'>
                 <div className='ce-nav__logo'>
-                    {LOGO_IMG}
-                    <div>
-                        <div className='ce-nav__name'>
-                            <span className='green'>Capital</span> Edge
-                        </div>
-                        <span className='ce-nav__tag'>built for traders</span>
-                    </div>
+                    <img src='/capital-edge-logo-dark.png' alt='Capital Edge' className='ce-nav__logo-img ce-nav__logo-img--dark' />
+                    <img src='/capital-edge-logo.png'      alt='Capital Edge' className='ce-nav__logo-img ce-nav__logo-img--light' />
                 </div>
                 <button className='ce-btn-primary' onClick={handleLogin} disabled={loggingIn}>
                     {loggingIn ? <span className='ce-spinner' /> : 'Log In'}
