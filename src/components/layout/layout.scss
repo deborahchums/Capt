@@ -5,12 +5,69 @@
     flex-direction: column;
     height: 100vh;
 
+    /* -------------------------------------------------------
+       Capital Edge dark-navy header — always dark regardless
+       of light/dark page theme so branding stays consistent.
+    ------------------------------------------------------- */
     .deriv-header {
-        background: var(--general-main-1);
+        background: #0a0f1e !important;
         height: 4.9rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.18) !important;
 
         @include mobile-or-tablet-screen {
             height: 4rem;
+        }
+
+        /* Override Deriv UI text/icon colour variables for the dark header */
+        --text-prominent: #ffffff;
+        --text-general: rgba(255, 255, 255, 0.85);
+        --text-less-prominent: rgba(255, 255, 255, 0.6);
+        --general-section-1: rgba(255, 255, 255, 0.08);
+        --icon-black-plus: #ffffff;
+
+        /* All SVG icons white */
+        svg path,
+        svg g > path {
+            fill: #ffffff;
+        }
+
+        /* Platform-switcher + nav links */
+        .platform-switcher,
+        .menu-links__item a {
+            color: rgba(255, 255, 255, 0.85) !important;
+
+            &:hover {
+                color: #d4af37 !important;
+            }
+        }
+
+        /* Account info area — balance, currency, chevron */
+        .deriv-account-switcher-trigger,
+        .deriv-account-switcher-trigger *,
+        .dc-buy-sell-trade-type-tabs__balance,
+        [class*='account-switcher'] [class*='balance'],
+        [class*='account-switcher'] [class*='currency'] {
+            color: #ffffff !important;
+        }
+
+        /* Login / Signup buttons */
+        .login-btn {
+            border-color: rgba(212, 175, 55, 0.55) !important;
+            color: #d4af37 !important;
+            background: transparent !important;
+        }
+
+        .signup-btn {
+            background: linear-gradient(135deg, #d4af37, #f0cc55) !important;
+            color: #0a0f1e !important;
+            border: none !important;
+        }
+
+        /* Deposit button */
+        .deposit-button {
+            border-color: #d4af37 !important;
+            color: #d4af37 !important;
+            background: transparent !important;
         }
     }
 
@@ -21,4 +78,9 @@
             }
         }
     }
+}
+
+/* Skeleton loader on dark header */
+.layout .dc-accounts-info-loader {
+    background: transparent;
 }
