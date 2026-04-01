@@ -71,7 +71,7 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
         setIsSafari(isSafariBrowser());
 
         return () => {
-            chart_api.api.forgetAll('ticks');
+            chart_api.api?.forgetAll('ticks');
         };
     }, []);
 
@@ -90,14 +90,15 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
     }, [symbol, updateSymbol]);
 
     const requestAPI = (req: ServerTimeRequest | ActiveSymbolsRequest | TradingTimesRequest) => {
-        return chart_api.api.send(req);
+        return chart_api.api?.send(req);
     };
     const requestForgetStream = (subscription_id: string) => {
-        subscription_id && chart_api.api.forget(subscription_id);
+        subscription_id && chart_api.api?.forget(subscription_id);
     };
 
     const requestSubscribe = async (req: TicksStreamRequest, callback: (data: any) => void) => {
         try {
+            if (!chart_api.api) return;
             requestForgetStream(chartSubscriptionIdRef.current);
             const history = await chart_api.api.send(req);
             setChartSubscriptionId(history?.subscription.id);

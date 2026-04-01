@@ -41,7 +41,11 @@ export const loadBlockly = async isDarkMode => {
         base: window.Blockly.Themes.Zelos,
         componentStyles: {},
     });
-    modifyBlocklyWorkSpaceContextMenu();
+    try {
+        modifyBlocklyWorkSpaceContextMenu();
+    } catch (e) {
+        console.warn('[Blockly] Could not modify context menu:', e);
+    }
     setColors(isDarkMode);
     await import('./hooks/index.js');
     await import('./blocks');

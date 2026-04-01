@@ -10,6 +10,7 @@ import './workspace.scss';
 const WorkspaceWrapper = observer(() => {
     const { blockly_store } = useStore();
     const { onMount, onUnmount, is_loading } = blockly_store;
+    const [workspace_ready, setWorkspaceReady] = React.useState(false);
 
     React.useEffect(() => {
         onMount();
@@ -18,19 +19,30 @@ const WorkspaceWrapper = observer(() => {
         };
     }, []);
 
-    if (is_loading) return null;
+    React.useEffect(() => {
+        if (window.Blockly?.derivWorkspace) {
+            setWorkspaceReady(true);
+            return;
+        }
+        const interval = setInterval(() => {
+            if (window.Blockly?.derivWorkspace) {
+                setWorkspaceReady(true);
+                clearInterval(interval);
+            }
+        }, 100);
+        return () => clearInterval(interval);
+    }, [is_loading]);
 
-    if (window.Blockly?.derivWorkspace)
-        return (
-            <React.Fragment>
-                <Toolbox />
-                <Toolbar />
-                <Flyout />
-                <StopBotModal />
-            </React.Fragment>
-        );
+    if (is_loading || !workspace_ready) return null;
 
-    return null;
+    return (
+        <React.Fragment>
+            <Toolbox />
+            <Toolbar />
+            <Flyout />
+            <StopBotModal />
+        </React.Fragment>
+    );
 });
 
 export default WorkspaceWrapper;
