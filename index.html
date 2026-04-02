@@ -38,10 +38,15 @@
             :root {
                 font-size: 62.5%;
             }
+            /* Dark background before any CSS file loads — eliminates white flash */
+            html, body {
+                background-color: #0a0f1e !important;
+                color: #e2e8f0;
+            }
         </style>
     </head>
 
-    <body class="body theme theme--light">
+    <body class="body theme theme--dark">
         <div id="modal_root" class="modal-root"></div>
         <div id="popup_root" class="popup-root"></div>
         <div id="root"></div>

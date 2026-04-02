@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import ErrorBoundary from '@/components/error-component/error-boundary';
 import ErrorComponent from '@/components/error-component/error-component';
@@ -33,62 +33,36 @@ const ErrorComponentWrapper = observer(() => {
 const AppRoot = () => {
     const store = useStore();
     const api_base_initialized = useRef(false);
-    const [is_api_initialized, setIsApiInitialized] = useState(false);
-    const [is_tmb_check_complete, setIsTmbCheckComplete] = useState(false);
-    const [, setIsTmbEnabled] = useState(false);
     const { isTmbEnabled } = useTMB();
 
-    // Effect to check TMB status - independent of API initialization
+    // Fire-and-forget: initialize API immediately, don't block rendering.
+    // TMB check and API init happen in parallel; the app is already visible.
     useEffect(() => {
-        const checkTmbStatus = async () => {
+        if (api_base_initialized.current) return;
+        api_base_initialized.current = true;
+
+        const run = async () => {
+            // TMB check — non-blocking, just sets window flag
             try {
                 const tmb_status = await isTmbEnabled();
-                const final_status = tmb_status || window.is_tmb_enabled === true;
+                window.is_tmb_enabled = tmb_status || window.is_tmb_enabled === true;
+            } catch {
+                // ignore — TMB is optional
+            }
 
-                setIsTmbEnabled(final_status);
-
-                setIsTmbCheckComplete(true);
-            } catch (error) {
-                console.error('TMB check failed:', error);
-                setIsTmbCheckComplete(true);
+            // API init
+            try {
+                await api_base.init();
+            } catch (err) {
+                console.error('[Capital Edge] API init failed:', err);
             }
         };
 
-        checkTmbStatus();
+        run();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Initialize API when TMB check is complete with timeout fallback
-    useEffect(() => {
-        if (!is_tmb_check_complete) {
-            return; // Wait until TMB check is complete
-        }
-
-        const timeoutId = setTimeout(() => {
-            if (!is_api_initialized) {
-                setIsApiInitialized(true);
-            }
-        }, 5000);
-
-        const initializeApi = async () => {
-            if (!api_base_initialized.current) {
-                try {
-                    await api_base.init();
-                    api_base_initialized.current = true;
-                } catch (error) {
-                    console.error('API initialization failed:', error);
-                    api_base_initialized.current = false;
-                } finally {
-                    setIsApiInitialized(true);
-                    clearTimeout(timeoutId); // Clear timeout if API init completes
-                }
-            }
-        };
-
-        initializeApi();
-        return () => clearTimeout(timeoutId);
-    }, [is_tmb_check_complete]);
-
-    if (!store || !is_api_initialized) return <AppRootLoader />;
+    if (!store) return <AppRootLoader />;
 
     return (
         <Suspense fallback={<AppRootLoader />}>

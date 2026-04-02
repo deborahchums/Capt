@@ -55,9 +55,45 @@ const WorkspaceWrapper = observer(() => {
         };
     }, [is_loading]);
 
-    if (is_loading) return null;
-
-    if (!workspace_ready) return null;
+    if (is_loading || !workspace_ready) {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    gap: '1.6rem',
+                    color: '#94a3b8',
+                }}
+            >
+                <svg width='44' height='44' viewBox='0 0 44 44' fill='none'>
+                    <circle cx='22' cy='22' r='18' stroke='rgba(61,186,126,0.2)' strokeWidth='4' />
+                    <circle
+                        cx='22'
+                        cy='22'
+                        r='18'
+                        stroke='#3dba7e'
+                        strokeWidth='4'
+                        strokeLinecap='round'
+                        strokeDasharray='28 84'
+                        transform='rotate(-90 22 22)'
+                    >
+                        <animateTransform
+                            attributeName='transform'
+                            type='rotate'
+                            from='0 22 22'
+                            to='360 22 22'
+                            dur='0.9s'
+                            repeatCount='indefinite'
+                        />
+                    </circle>
+                </svg>
+                <span style={{ fontSize: '1.3rem', letterSpacing: '0.04em' }}>Loading Bot Builder…</span>
+            </div>
+        );
+    }
 
     return (
         <React.Fragment>

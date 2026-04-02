@@ -47,6 +47,16 @@ const buildAccountMaps = (tokens: Record<string, string>) => {
     return { accountsList, clientAccounts };
 };
 
+// Race an authorize call against a 4-second timeout.
+// On slow mobile connections the WebSocket roundtrip can hang; if it does
+// we fall through and store the raw URL token so the main app can finish auth.
+const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T | null> => {
+    return Promise.race([
+        promise,
+        new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+    ]);
+};
+
 const authorizeAndStore = async (
     tokens: Record<string, string>,
     clientAccounts: Record<string, { loginid: string; token: string; currency: string }>,
@@ -54,32 +64,38 @@ const authorizeAndStore = async (
 ) => {
     let is_token_set = false;
     try {
-        const api = await generateDerivApiInstance();
+        const api = generateDerivApiInstance();
         if (api) {
-            const { authorize, error } = await api.authorize(tokens.token1);
+            const result = await withTimeout(api.authorize(tokens.token1), 4000);
             api.disconnect();
-            if (error) {
-                if (error.code === 'InvalidToken') {
-                    is_token_set = true;
-                    if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
-                        globalObserver.emit('InvalidToken', { error });
-                    }
-                    if (Cookies.get('logged_state') === 'false') {
-                        clearAuthData();
-                    }
-                }
+
+            if (result === null) {
+                // Timed out — fall through to raw-token fallback below
+                console.warn('[Capital Edge] authorize timed out, using raw token');
             } else {
-                localStorage.setItem('callback_token', authorize.toString());
-                // Use authorize.loginid (the actually-authorized account) to find the matching stored token.
-                // account_list[0] may be a different account (e.g. virtual) than what we authorized with.
-                const activeId = authorize?.loginid;
-                const matched =
-                    Object.values(clientAccounts).find(a => a.loginid === activeId) ||
-                    Object.values(clientAccounts).find(a => a.loginid === tokens.acct1);
-                if (matched) {
-                    localStorage.setItem('authToken', matched.token);
-                    localStorage.setItem('active_loginid', matched.loginid);
-                    is_token_set = true;
+                const { authorize, error } = result as { authorize: any; error: any };
+                if (error) {
+                    if (error.code === 'InvalidToken') {
+                        is_token_set = true;
+                        if (Cookies.get('logged_state') === 'true' && !is_tmb_enabled) {
+                            globalObserver.emit('InvalidToken', { error });
+                        }
+                        if (Cookies.get('logged_state') === 'false') {
+                            clearAuthData();
+                        }
+                    }
+                } else {
+                    localStorage.setItem('callback_token', authorize.toString());
+                    // Match by loginid (not position) so virtual/real accounts resolve correctly.
+                    const activeId = authorize?.loginid;
+                    const matched =
+                        Object.values(clientAccounts).find(a => a.loginid === activeId) ||
+                        Object.values(clientAccounts).find(a => a.loginid === tokens.acct1);
+                    if (matched) {
+                        localStorage.setItem('authToken', matched.token);
+                        localStorage.setItem('active_loginid', matched.loginid);
+                        is_token_set = true;
+                    }
                 }
             }
         }
@@ -106,7 +122,13 @@ const LegacyOAuthCallback = ({ is_tmb_enabled }: { is_tmb_enabled: boolean }) =>
 
         authorizeAndStore(tokens, clientAccounts, is_tmb_enabled)
             .then(() => {
-                Cookies.set('logged_state', 'true', { expires: 30, path: '/' });
+                const cookieDomain = window.location.hostname.split('.').slice(-2).join('.');
+                Cookies.set('logged_state', 'true', {
+                    domain: cookieDomain,
+                    expires: 30,
+                    path: '/',
+                    secure: window.location.protocol === 'https:',
+                });
                 const currency = getSelectedCurrency(tokens, clientAccounts, null);
                 window.location.replace(window.location.origin + `/?account=${currency}`);
             })
@@ -155,6 +177,14 @@ const CallbackPage = () => {
         localStorage.setItem('accountsList', JSON.stringify(accountsList));
         localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
         await authorizeAndStore(tokens, clientAccounts, is_tmb_enabled);
+        // Set the auth cookie for this path too (same as LegacyOAuthCallback)
+        const cookieDomain = window.location.hostname.split('.').slice(-2).join('.');
+        Cookies.set('logged_state', 'true', {
+            domain: cookieDomain,
+            expires: 30,
+            path: '/',
+            secure: window.location.protocol === 'https:',
+        });
         const currency = getSelectedCurrency(tokens, clientAccounts, state);
         window.location.replace(window.location.origin + `/?account=${currency}`);
     }, [is_tmb_enabled]);

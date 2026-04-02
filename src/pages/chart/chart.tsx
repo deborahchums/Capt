@@ -75,18 +75,24 @@ const Chart = observer(({ show_digits_stats }: { show_digits_stats: boolean }) =
         };
     }, []);
 
-    // Poll until chart_api.api is initialised (created by api_base.init → chart_api.init)
+    // Poll until chart_api.api exists AND its WebSocket is OPEN (readyState 1).
+    // Rendering SmartChart before the socket is open causes it to hang on
+    // "Retrieving Market Symbols..." because requestAPI returns before the
+    // server can reply.
     useEffect(() => {
-        if (chart_api.api) {
+        const isReady = () =>
+            !!chart_api.api && chart_api.api.connection?.readyState === 1;
+
+        if (isReady()) {
             setIsApiReady(true);
             return;
         }
         const interval = setInterval(() => {
-            if (chart_api.api) {
+            if (isReady()) {
                 setIsApiReady(true);
                 clearInterval(interval);
             }
-        }, 200);
+        }, 100);
         return () => clearInterval(interval);
     }, []);
 
