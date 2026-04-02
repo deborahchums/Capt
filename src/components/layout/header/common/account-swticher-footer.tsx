@@ -17,7 +17,7 @@ type TAccountSwitcherFooter = {
 };
 import { AccountSwitcherDivider } from './utils';
 
-const AccountSwitcherFooter = ({ loginid, residence, type }: TAccountSwitcherFooter) => {
+const AccountSwitcherFooter = ({ loginid, residence, type, oAuthLogout, is_logging_out }: TAccountSwitcherFooter) => {
     const accountList = JSON.parse(localStorage.getItem('clientAccounts') || '{}');
     const account_currency = loginid ? accountList[loginid]?.currency : '';
     // Hide manage button for demo accounts (virtual accounts)
@@ -84,9 +84,36 @@ const AccountSwitcherFooter = ({ loginid, residence, type }: TAccountSwitcherFoo
                     >
                         <Localize i18n_default_text='Manage accounts' />
                     </Button>
-                    {/* Logout button removed from Desktop interface as per acceptance criteria */}
                 </div>
             )}
+            <AccountSwitcherDivider />
+            <div style={{ padding: '0.8rem 1.6rem' }}>
+                <Button
+                    id='logout-button'
+                    className='logout-button'
+                    is_loading={is_logging_out}
+                    onClick={oAuthLogout}
+                    style={{
+                        width: '100%',
+                        background: 'transparent',
+                        border: '1px solid rgba(255,255,255,0.15)',
+                        color: '#e2e8f0',
+                        borderRadius: '0.4rem',
+                        padding: '0.8rem 1.6rem',
+                        cursor: 'pointer',
+                        fontSize: '1.2rem',
+                        fontWeight: 600,
+                        letterSpacing: '0.04em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.6rem',
+                        transition: 'background 0.2s',
+                    }}
+                >
+                    <Localize i18n_default_text='Log out' />
+                </Button>
+            </div>
         </div>
     );
 };

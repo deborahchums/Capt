@@ -116,26 +116,30 @@ const LegacyOAuthCallback = ({ is_tmb_enabled }: { is_tmb_enabled: boolean }) =>
         const tokens: Record<string, string> = {};
         params.forEach((value, key) => { tokens[key] = value; });
 
-        const { accountsList, clientAccounts } = buildAccountMaps(tokens);
-        localStorage.setItem('accountsList', JSON.stringify(accountsList));
-        localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
+        try {
+            const { accountsList, clientAccounts } = buildAccountMaps(tokens);
+            localStorage.setItem('accountsList', JSON.stringify(accountsList));
+            localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
 
-        authorizeAndStore(tokens, clientAccounts, is_tmb_enabled)
-            .then(() => {
-                const cookieDomain = window.location.hostname.split('.').slice(-2).join('.');
-                Cookies.set('logged_state', 'true', {
-                    domain: cookieDomain,
-                    expires: 30,
-                    path: '/',
-                    secure: window.location.protocol === 'https:',
-                });
-                const currency = getSelectedCurrency(tokens, clientAccounts, null);
-                window.location.replace(window.location.origin + `/?account=${currency}`);
-            })
-            .catch(err => {
-                console.error('[Capital Edge] Legacy OAuth processing failed:', err);
-                setStatus('error');
+            // Store tokens directly from URL — no WebSocket roundtrip needed here.
+            // The main app's authorizeAndSubscribe() will complete the full auth.
+            localStorage.setItem('authToken', tokens.token1 || '');
+            localStorage.setItem('active_loginid', tokens.acct1 || '');
+
+            const cookieDomain = window.location.hostname.split('.').slice(-2).join('.');
+            Cookies.set('logged_state', 'true', {
+                domain: cookieDomain,
+                expires: 30,
+                path: '/',
+                secure: window.location.protocol === 'https:',
             });
+
+            const currency = getSelectedCurrency(tokens, clientAccounts, null);
+            window.location.replace(window.location.origin + `/?account=${currency}`);
+        } catch (err) {
+            console.error('[Capital Edge] Legacy OAuth processing failed:', err);
+            setStatus('error');
+        }
     }, [is_tmb_enabled]);
 
     if (status === 'error') {
